@@ -28,12 +28,12 @@
       <header class="doc-heading">
         <p class="overline">LINUX · DNF</p>
         <h1>Build on Fedora</h1>
-        <p class="lead">Install the compiler, GNU binutils, Make, NASM, and Git to compile both ELF targets.</p>
+        <p class="lead">Install the compiler, ISO tools, and Git to compile both ELF targets and optionally build a Limine ISO.</p>
       </header>
 
       <section class="callout">
         <span class="callout-mark">!</span>
-        <p>This builds ELF kernel files only, not an ISO or bootable OS. Use a disposable VM for beta testing; do not write the outputs to a disk.</p>
+        <p>The opt-in ISO target supports x86-64 VM testing. It is not an installer; use a disposable VM and never write outputs to a physical disk.</p>
       </section>
 
       <section class="doc-section" id="tools">
@@ -41,7 +41,7 @@
         <h2>Install dependencies</h2>
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>Fedora</span></div>
-          <pre><code>sudo dnf install -y gcc make binutils nasm git file</code></pre>
+          <pre><code>sudo dnf install -y gcc make binutils nasm git file curl xorriso</code></pre>
         </div>
         <p>The build is freestanding and does not link against the guest's C library. GCC must accept the <code>-m32</code> and <code>-m64</code> options; GNU binutils must provide the i386 and x86-64 ELF link modes.</p>
       </section>
@@ -67,7 +67,7 @@ file build/x86/kernel.elf build/x86_64/kernel.elf
 readelf -h build/x86/kernel.elf
 readelf -h build/x86_64/kernel.elf</code></pre>
         </div>
-        <p>Outputs are under <code>build/x86/</code> and <code>build/x86_64/</code>. Use <code>make check-x86</code> or <code>make check-x86_64</code> to compile one architecture. Inspecting ELF headers does not test booting; the kernel has no bootloader or boot protocol.</p>
+        <p>To create the pinned Limine v12.9.4 BIOS/UEFI image, run <code>make iso</code>. To test it in QEMU, also install <code>qemu-system-x86</code> and run <code>make run-qemu</code>. The legacy ELF outputs are not bootable by themselves.</p>
       </section>
 
       <footer class="doc-footer">

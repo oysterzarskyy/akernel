@@ -4,15 +4,17 @@ This directory records the beta release status and intended artifacts.
 
 ## Image status
 
-**No ISO is available for this version.** The repository builds x86 and x86-64
-ELF kernel files, but it does not provide a bootloader, boot protocol, disk
-image target, or the CPU-mode and memory setup required to start the kernel.
-The ISO filename in `manifest.json` is a planned name only; it is not a file
-and must not be treated as a download.
+The repository includes an opt-in x86-64 Limine boot path and can build
+`build/akernel-1.1.109403-x86_64.iso` locally with `make iso`. This source
+release does not include a prebuilt ISO; the filename in `manifest.json` is a
+build output path, not a download link. The image is intended for disposable
+VM testing, not installation.
 
-Do not replace a Linux installation, write an akernel artifact to a disk, or
-try to boot this ELF with a generic VM kernel option. Use the disposable Linux
-VM workflow below to build and inspect the outputs safely.
+The ISO target downloads the pinned Limine v12.9.4 binary package, verifies its
+SHA-256 before extraction, and creates BIOS/UEFI boot media. Only the x86-64
+Limine target is bootable; the separate legacy x86 and x86-64 ELF files are not.
+Do not write the ISO or ELF files to a physical disk or replace a Linux
+installation.
 
 ## Recommended beta test: build inside an Ubuntu VM
 
@@ -25,10 +27,12 @@ Run these commands in the Ubuntu guest:
 
 ```sh
 sudo apt update
-sudo apt install -y build-essential gcc-multilib binutils nasm git
+sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso qemu-system-x86
 git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel
 make
+make iso
+make run-qemu
 file build/x86/kernel.elf build/x86_64/kernel.elf
 readelf -h build/x86/kernel.elf
 readelf -h build/x86_64/kernel.elf
@@ -36,9 +40,11 @@ readelf -h build/x86_64/kernel.elf
 
 The repository currently has no published version tag, so this builds the
 default branch. After the version tag is published, use `git fetch --tags` and
-`git checkout v1.1.109403` before `make` to test that exact source snapshot.
-Successful ELF inspection verifies the build format, not bootability. The VM
-remains a Linux guest; this beta does not replace its operating system.
+`git checkout v1.1.109403` before building to test that exact source snapshot.
+`make run-qemu` starts an isolated VM that boots the generated ISO as a virtual
+CD. The Limine boot display uses the framebuffer to show the akernel fetch
+information and compact ASCII art. The guest and host operating systems remain
+unchanged.
 
 ## Package status
 

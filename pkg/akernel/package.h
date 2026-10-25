@@ -1,7 +1,7 @@
 #ifndef AKERNEL_PACKAGE_H
 #define AKERNEL_PACKAGE_H
 
-#include "../../include/akPackage.h"
+#include "../../kernel/include/akernel/akPackage.h"
 
 typedef struct akpkg_descriptor {
     const char *name;

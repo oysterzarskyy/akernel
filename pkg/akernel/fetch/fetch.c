@@ -45,7 +45,7 @@ static const char *const akpkg_fetch_info[] = {
     "Build: freestanding ELF",
     "Status: beta scaffold",
     "Packages: metadata and stubs",
-    "Boot: external loader required"
+    "Boot: " AKPACKAGE_BOOT_PROTOCOL
 };
 
 static unsigned int akpkg_fetch_string_length(const char *text)

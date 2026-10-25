@@ -3,12 +3,14 @@
         {
             "name": "akernel",
             "includePath": [
-                "${workspaceFolder}/include",
+                "${workspaceFolder}/kernel/include",
+                "${workspaceFolder}/third_party/limine-protocol",
                 "${workspaceFolder}/pkg/akernel",
                 "${workspaceFolder}/pkg/akernel/fetch",
                 "${workspaceFolder}/pkg/akernel/fetch/include",
                 "${workspaceFolder}/pkg/akernel/sys"
             ],
+            "intelliSenseMode": "linux-gcc-x64",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }

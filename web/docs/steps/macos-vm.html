@@ -33,7 +33,7 @@
 
       <section class="callout">
         <span class="callout-mark">!</span>
-        <p>Apple's native toolchain produces Mach-O files, not the ELF targets used here. A Linux VM is the recommended path. On Apple Silicon, select an x86-64 Ubuntu guest with emulation; it may run more slowly than a native ARM guest.</p>
+        <p>Apple's native toolchain produces Mach-O files, not the ELF targets used here. Use an x86-64 Ubuntu guest to build and boot-test the Limine ISO. On Apple Silicon, x86-64 emulation may run more slowly than a native ARM guest.</p>
       </section>
 
       <section class="doc-section" id="vm">
@@ -53,10 +53,12 @@
         <div class="code-block">
           <div class="code-caption"><span>UBUNTU · VM GUEST</span><span>build both architectures</span></div>
           <pre><code>sudo apt update
-sudo apt install -y build-essential gcc-multilib binutils nasm git file
+sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso qemu-system-x86
 git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel
-make</code></pre>
+make
+make iso
+make run-qemu</code></pre>
         </div>
         <p>The current repository has no published version tag. When <code>v1.1.109403</code> is published, use <code>git fetch --tags</code> and <code>git checkout v1.1.109403</code> before running <code>make</code>.</p>
       </section>
@@ -70,7 +72,7 @@ make</code></pre>
 readelf -h build/x86/kernel.elf
 readelf -h build/x86_64/kernel.elf</code></pre>
         </div>
-        <p>This checks the output format only. The beta has no ISO, bootloader, or boot protocol, so do not try to install or boot these files. Your Mac and VM remain running their existing operating systems.</p>
+        <p>The ISO boots the x86-64 kernel through Limine inside QEMU. It is a VM test image, not an installer. Do not attach a physical Mac disk or attempt to replace macOS.</p>
       </section>
 
       <footer class="doc-footer">

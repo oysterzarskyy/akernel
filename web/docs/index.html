@@ -36,7 +36,7 @@
         <a class="sidebar-link" href="#forum-api">Forum API</a>
         <div class="sidebar-note">
           <span class="status-dot"></span>
-          <span>Beta 1.1.109403<br><strong>ELF scaffold</strong></span>
+          <span>Beta 1.1.109403<br><strong>Limine x86-64</strong></span>
         </div>
       </aside>
 
@@ -51,7 +51,7 @@
 
         <section class="callout" aria-label="Project status">
           <span class="callout-mark">i</span>
-          <p><strong>Project status.</strong> akernel builds freestanding kernel ELF files. It is not yet a bootable operating system and does not produce a disk image. A bootloader and its required CPU mode and memory mappings are not included.</p>
+          <p><strong>Project status.</strong> The opt-in <code>make iso</code> target builds an x86-64 Limine boot image for BIOS and UEFI VM testing. akernel is still a kernel scaffold, not a complete operating system or installer; the legacy ELF targets are unchanged.</p>
         </section>
 
         <section class="doc-section" id="requirements">
@@ -69,7 +69,7 @@
         <section class="doc-section" id="build-guides">
           <p class="section-kicker">02 — BUILD BY HOST OPERATING SYSTEM</p>
           <h2>Step-by-step build guides</h2>
-          <p>Choose the instructions for the computer you are building on. Linux distributions have separate package-manager steps; Windows uses WSL 2, and macOS uses a disposable Linux VM. These are instructions for compiling the kernel sources, not for assembling a bootable OS image.</p>
+          <p>Choose the instructions for the computer you are building on. Linux distributions have separate package-manager steps; Windows uses WSL 2, and macOS uses a disposable Linux VM. The optional ISO build requires xorriso and downloads a pinned Limine release with checksum verification.</p>
           <ul class="guide-list">
             <li><a href="steps/index.html">All build guides and safety notes</a></li>
             <li><a href="steps/linux-ubuntu.html">Ubuntu and Debian Linux</a></li>
@@ -78,35 +78,38 @@
             <li><a href="steps/windows-wsl.html">Windows 10/11 with WSL 2</a></li>
             <li><a href="steps/macos-vm.html">macOS with an Ubuntu VM</a></li>
           </ul>
-          <div class="note-line"><strong>Safety</strong><span>This beta only creates ELF kernel files. It has no bootloader, installer, or ISO; do not write its outputs to a disk or replace your operating system.</span></div>
+          <div class="note-line"><strong>Safety</strong><span>Test the locally built ISO in a disposable VM only. It is not an installer; never write it to a physical disk or replace your operating system.</span></div>
         </section>
 
         <section class="doc-section" id="layout">
           <p class="section-kicker">06 — THE SOURCE</p>
           <h2>Project layout</h2>
           <div class="file-list">
-            <div><code>main.c</code><span>Freestanding kernel entry routine and startup banner.</span></div>
-            <div><code>include/</code><span>Kernel declarations, error codes, and version metadata.</span></div>
-            <div><code>arch/x86/</code><span>32-bit entry assembly and linker script.</span></div>
-            <div><code>arch/x86_64/</code><span>64-bit entry assembly and linker script.</span></div>
+            <div><code>kernel/src/legacy/main.c</code><span>Legacy VGA startup banner and kernel entry routine.</span></div>
+            <div><code>kernel/include/akernel/</code><span>Kernel, version, compatibility, boot, console, and CPU headers.</span></div>
+            <div><code>kernel/src/</code><span>Kernel entry, Limine boot protocol, framebuffer console, and core routines.</span></div>
+            <div><code>kernel/arch/x86/</code><span>32-bit entry assembly and linker script.</span></div>
+            <div><code>kernel/arch/x86_64/</code><span>Legacy 64-bit and Limine linker scripts and entry assembly.</span></div>
+            <div><code>third_party/limine-protocol/</code><span>Pinned Limine protocol header and its 0BSD license.</span></div>
+            <div><code>third_party/limine-protocol/</code><span>Pinned Limine protocol header and its 0BSD license.</span></div>
             <div><code>pkg/akernel/</code><span>Package descriptors, the fetch system-info renderer, and sys interface stub.</span></div>
             <div><code>releases/</code><span>Versioned release notes and artifact availability manifests.</span></div>
             <div><code>web/docs/steps/</code><span>Standalone build instructions for Linux, Windows, and macOS hosts.</span></div>
-            <div><code>Makefile</code><span>Build targets for both ELF architectures.</span></div>
+            <div><code>Makefile</code><span>Legacy ELF targets plus the opt-in Limine ISO and QEMU targets.</span></div>
             <div><code>web/</code><span>Project landing page, documentation, and visual identity.</span></div>
           </div>
-          <p>The entry points initialize a stack and call <code>kernel_main</code>. The sample writes to VGA text memory at <code>0xB8000</code>, so a compatible mapping is required from the loader.</p>
+          <p>The Limine ISO target is separate from the legacy entry points: it uses the Limine protocol, requests an RGB framebuffer, and displays the system-information screen. The 32-bit and standard 64-bit ELF targets remain loader-dependent.</p>
         </section>
 
         <section class="doc-section" id="packages">
           <p class="section-kicker">07 — PACKAGE STATUS</p>
           <h2>Packages in this beta</h2>
-          <p>The current package code is metadata and interface scaffolding. It is not an installer, package repository, or complete runtime service. Package sources are not part of the default <code>make</code> targets.</p>
+          <p>The current package code is metadata and interface scaffolding. It is not an installer, package repository, or complete runtime service. The fetch renderer is included in the opt-in Limine boot target; package sources are not part of the default <code>make</code> targets.</p>
           <div class="file-list">
             <div><code>pkg/akernel/package.h</code><span>Common package descriptor, version comparison, and target compatibility checks.</span></div>
             <div><code>pkg/akernel/fetch/</code><span>Text system-information renderer with compact ASCII artwork; a caller-provided writer handles output.</span></div>
             <div><code>pkg/akernel/sys/</code><span>System package descriptor stub; system calls and runtime services are not implemented.</span></div>
-            <div><code>include/akPackage.h</code><span>Kernel version, x86/x86-64, freestanding, and ELF target metadata.</span></div>
+            <div><code>kernel/include/akernel/akPackage.h</code><span>Kernel version, x86/x86-64, freestanding, and ELF target metadata.</span></div>
           </div>
           <p>Both sample package descriptors require kernel 1.1.0 or newer, freestanding ELF builds, and a supported x86 architecture. These checks do not install or execute packages.</p>
         </section>
@@ -133,8 +136,8 @@ git push -u origin my-change</code></pre>
         <section class="doc-section" id="releases">
           <p class="section-kicker">09 — PUBLISH</p>
           <h2>Beta release 1.1.109403</h2>
-          <p>The versioned release record is in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.1.109403">the releases folder ↗</a>. The repository does not yet have a published version tag or GitHub Release. There is also no ISO for this beta: the project has no bootloader, defined boot protocol, or disk-image build target. The release manifest records the planned ISO filename as unavailable; it is not a downloadable artifact.</p>
-          <p>When publishing source, tag the version and create a GitHub Release. ELF files may be attached as build outputs, clearly labeled as non-bootable kernel scaffolds.</p>
+          <p>The versioned release record is in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.1.109403">the releases folder ↗</a>. The repository does not yet have a published version tag or GitHub Release. The source can build an x86-64 Limine ISO locally with <code>make iso</code>, but no ISO is attached to this source release. The manifest lists it as buildable, not published.</p>
+          <p>When publishing source, tag the version and create a GitHub Release. Clearly label the ISO as a VM-test image, not a complete installable operating system.</p>
           <div class="code-block">
             <div class="code-caption"><span>GIT</span><span>beta 1.1.109403</span></div>
             <pre><code>git tag v1.1.109403

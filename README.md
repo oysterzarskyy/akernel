@@ -1,16 +1,21 @@
 # akernel v1.1
 
 akernel is a small freestanding kernel scaffold with separate 32-bit x86 and
-x86-64 ELF targets. Version 1.1 adds a project site, clearer host build
-instructions, and a versioned kernel startup banner.
+x86-64 ELF targets. It also has an opt-in x86-64 bootable ISO target using the
+Limine boot protocol.
 
-> **Status:** This is not a bootable operating system yet. The build produces
-> kernel ELF files, not a bootloader, disk image, or installable OS. A loader
-> must provide the required CPU mode and memory mapping before entering `_start`.
+> **Status:** `make iso` creates an x86-64 Limine boot image for VM testing.
+> This remains a kernel scaffold, not a complete operating system or installer.
+> The existing x86 and x86-64 ELF targets are separate legacy outputs.
 
 ## Build
 
-GNU Make, GCC (with 32-bit support), GNU binutils, and NASM are required.
+GNU Make, GCC (with 32-bit support), GNU binutils, and NASM are required for
+the legacy ELF targets. The optional ISO target additionally requires `curl`,
+`sha256sum`, `tar`, and `xorriso`; its pinned Limine v12.9.4 binaries are
+downloaded to `build/` and checked against a fixed SHA-256 before extraction.
+The ISO also includes Limine's binary-package license and third-party notices.
+Only the ISO target needs those additional tools.
 
 ### Linux
 
@@ -18,18 +23,24 @@ On Debian or Ubuntu:
 
 ```sh
 sudo apt-get update
-sudo apt-get install --yes build-essential gcc-multilib nasm
+sudo apt-get install --yes build-essential gcc-multilib nasm curl xorriso
 make
+make iso
 ```
 
 `make check-x86` and `make check-x86_64` build individual targets. Outputs are
-written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`.
+written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`. `make iso`
+builds `build/akernel-1.1.109403-x86_64.iso`, which supports x86-64 BIOS and
+UEFI boot through Limine. To test it with QEMU, install `qemu-system-x86` and
+run `make run-qemu`. The VM target boots only the ISO; it does not access a
+physical disk.
 
 ### Windows
 
-Use WSL 2 with an Ubuntu distribution, then follow the Linux instructions inside
-the WSL terminal. The kernel uses ELF cross-compilation tools and is not a
-native Windows executable.
+Use WSL 2 with an Ubuntu distribution, then follow the Linux instructions
+inside the WSL terminal. The kernel uses ELF cross-compilation tools and is not
+a native Windows executable. Run `make run-qemu` inside a Linux VM rather than
+trying to boot the ISO directly on the Windows host.
 
 ### macOS
 
@@ -47,7 +58,8 @@ gmake CC_X86=i686-elf-gcc LD_X86=i686-elf-ld \
 ```
 
 The x86 and x86-64 toolchains must also provide NASM and support the ELF
-emulations selected in the Makefile.
+emulations selected in the Makefile. For the ISO target, use a Linux
+environment with `curl`, `sha256sum`, `tar`, and `xorriso`.
 
 ## Website and community forum
 
@@ -77,10 +89,10 @@ GitHub Pages deployment is configured in
 ## Beta release 1.1.109403
 
 Versioned beta notes and the artifact manifest are in
-[`releases/v1.1.109403/`](releases/v1.1.109403/). This beta has no ISO: the
-project has no bootloader, boot protocol, or disk-image target yet. Do not
-replace a Linux installation or try to boot these ELF outputs. The recommended
-test is to build them inside a disposable Ubuntu virtual machine; see the
+[`releases/v1.1.109403/`](releases/v1.1.109403/). The repository can build an
+x86-64 Limine ISO locally, but no ISO is attached to or published with this
+source release. Test it only in a disposable VM; do not replace a Linux
+installation or write the ISO to a physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
 
 The `pkg/akernel/` tree contains package metadata, a text system-information
@@ -117,31 +129,34 @@ git tag v(whatever you are work)
 git push origin v1.1
 ```
 
-Attach the built ELF files if you want to distribute the compiled scaffold.
-They are not bootable OS images; do not advertise them as an installable
-operating system. A future bootloader, image format, and boot/test workflow are
-needed before an OS image can be published.
+Attach the built ELF files or a separately tested ISO if you want to distribute
+the compiled scaffold. The ISO is for VM testing and is not an installable
+operating system.
 
 ## Boot status
 
-The x86 and x86-64 entry points initialize a stack and call `kernel_main`. A
-loader must load the matching ELF, provide a valid 32-bit protected-mode or
-64-bit long-mode environment, and jump to `_start`. The sample kernel writes
-to VGA text memory at `0xB8000`, so a compatible text-mode mapping is also
-required. Mode switching, disk loading, and GRUB configuration are not
-included.
+Kernel code is organized under `kernel/`: architecture-specific entry and
+linker files are in `kernel/arch/`, public kernel headers are in
+`kernel/include/akernel/`, and implementation modules are in `kernel/src/`.
+The opt-in Limine kernel target uses the x86-64 Limine protocol, requests an
+RGB framebuffer, and renders the package system-information display there. The
+ISO target packages Limine for BIOS and UEFI boot. The original x86 and
+x86-64 ELF targets still use their legacy entry points and are not bootable
+images. This project does not include an installer, a disk-writing target, or
+a complete operating system.
 
 ## Package and target compatibility
 
-`include/akPackage.h` exposes the kernel package version and build-target
-metadata. Package code can check `AKPACKAGE_OS_BUILD_COMPATIBLE` to ensure it is
-being compiled for a supported x86 or x86-64 freestanding ELF target. The
-package descriptors under `pkg/akernel/` can additionally declare a minimum
-kernel version and supported architecture mask.
+`kernel/include/akernel/akPackage.h` exposes the kernel package version and
+build-target metadata. Package code can check
+`AKPACKAGE_OS_BUILD_COMPATIBLE` to ensure it is being compiled for a supported
+x86 or x86-64 freestanding ELF target. The package descriptors under
+`pkg/akernel/` can additionally declare a minimum kernel version and supported
+architecture mask.
 
-These checks describe compiler/build compatibility only. The project does not
-define a boot protocol or produce a bootable image; a compatible external
-loader must provide the CPU mode and memory mappings described above.
+These checks describe compiler/build compatibility only. The Limine boot path
+is currently x86-64; it does not make the legacy ELF targets bootable or add
+support for other architectures or firmware.
 
 ## License
 

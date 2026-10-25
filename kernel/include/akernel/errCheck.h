@@ -1,5 +1,5 @@
-#ifndef AK_ERRCHECK_H
-#define AK_ERRCHECK_H
+#ifndef AKERNEL_ERRCHECK_H
+#define AKERNEL_ERRCHECK_H
 
 /*
  * Central error catalog for akernel.

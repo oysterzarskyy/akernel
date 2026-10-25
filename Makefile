@@ -5,11 +5,20 @@ CC_X86 ?= $(CC)
 LD_X86 ?= $(LD)
 CC_X86_64 ?= $(CC)
 LD_X86_64 ?= $(LD)
+LIMINE_VERSION := 12.9.4
+LIMINE_SHA256 := 847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b1
+LIMINE_ARCHIVE := build/limine-binary-$(LIMINE_VERSION).tar.gz
+LIMINE_DIR := build/limine-binary
+LIMINE_URL := https://github.com/Limine-Bootloader/limine/releases/download/v$(LIMINE_VERSION)/limine-binary.tar.gz
 
 CFLAGS := -std=c11 -ffreestanding -fno-pie -fno-stack-protector \
-          -Wall -Wextra -Werror -O2 -Iinclude
+          -Wall -Wextra -Werror -O2 -Ikernel/include
 
-.PHONY: all check-x86 check-x86_64 clean
+LIMINE_CFLAGS := $(CFLAGS) -m64 -mcmodel=kernel -mno-red-zone \
+                 -DAKPACKAGE_BOOT_PROTOCOL='"Limine"'
+
+.DELETE_ON_ERROR:
+.PHONY: all check-x86 check-x86_64 iso run-qemu clean
 
 all: check-x86 check-x86_64
 
@@ -17,27 +26,132 @@ check-x86: build/x86/kernel.elf
 
 check-x86_64: build/x86_64/kernel.elf
 
-build/x86/main.o: main.c include/kernel.h include/errCheck.h include/version.h
-	mkdir -p build/x86
-	$(CC_X86) $(CFLAGS) -m32 -c main.c -o $@
+iso: build/akernel-1.1.109403-x86_64.iso
 
-build/x86/entry.o: arch/x86/entry.asm
+run-qemu: iso
+	qemu-system-x86_64 -m 2G -cdrom build/akernel-1.1.109403-x86_64.iso
+
+build/x86/main.o: kernel/src/legacy/main.c \
+                  kernel/include/akernel/kernel.h \
+                  kernel/include/akernel/akPackage.h \
+                  kernel/include/akernel/errCheck.h \
+                  kernel/include/akernel/version.h \
+                  kernel/include/akernel/core/halt.h
+	mkdir -p build/x86
+	$(CC_X86) $(CFLAGS) -m32 -c $< -o $@
+
+build/x86/halt.o: kernel/src/core/halt.c kernel/include/akernel/core/halt.h
+	mkdir -p build/x86
+	$(CC_X86) $(CFLAGS) -m32 -c $< -o $@
+
+build/x86/entry.o: kernel/arch/x86/entry.asm
 	mkdir -p build/x86
 	$(NASM) -f elf32 $< -o $@
 
-build/x86/kernel.elf: build/x86/main.o build/x86/entry.o arch/x86/linker.ld
-	$(LD_X86) -m elf_i386 -T arch/x86/linker.ld -o $@ build/x86/entry.o build/x86/main.o
+build/x86/kernel.elf: build/x86/main.o build/x86/halt.o build/x86/entry.o kernel/arch/x86/linker.ld
+	$(LD_X86) -m elf_i386 -T kernel/arch/x86/linker.ld -o $@ \
+		build/x86/entry.o build/x86/main.o build/x86/halt.o
 
-build/x86_64/main.o: main.c include/kernel.h include/errCheck.h include/version.h
+build/x86_64/main.o: kernel/src/legacy/main.c \
+                     kernel/include/akernel/kernel.h \
+                     kernel/include/akernel/akPackage.h \
+                     kernel/include/akernel/errCheck.h \
+                     kernel/include/akernel/version.h \
+                     kernel/include/akernel/core/halt.h
 	mkdir -p build/x86_64
-	$(CC_X86_64) $(CFLAGS) -m64 -c main.c -o $@
+	$(CC_X86_64) $(CFLAGS) -m64 -c $< -o $@
 
-build/x86_64/entry.o: arch/x86_64/entry.asm
+build/x86_64/halt.o: kernel/src/core/halt.c kernel/include/akernel/core/halt.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(CFLAGS) -m64 -c $< -o $@
+
+build/x86_64/entry.o: kernel/arch/x86_64/entry.asm
 	mkdir -p build/x86_64
 	$(NASM) -f elf64 $< -o $@
 
-build/x86_64/kernel.elf: build/x86_64/main.o build/x86_64/entry.o arch/x86_64/linker.ld
-	$(LD_X86_64) -m elf_x86_64 -T arch/x86_64/linker.ld -o $@ build/x86_64/entry.o build/x86_64/main.o
+build/x86_64/kernel.elf: build/x86_64/main.o build/x86_64/halt.o \
+                         build/x86_64/entry.o kernel/arch/x86_64/linker.ld
+	$(LD_X86_64) -m elf_x86_64 -T kernel/arch/x86_64/linker.ld -o $@ \
+		build/x86_64/entry.o build/x86_64/main.o build/x86_64/halt.o
+
+build/x86_64/limine.o: kernel/src/boot/limine.c \
+                       kernel/include/akernel/boot/limine.h \
+                       kernel/include/akernel/console/framebuffer.h \
+                       third_party/limine-protocol/limine.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ithird_party/limine-protocol -c $< -o $@
+
+build/x86_64/kernel.o: kernel/src/kernel.c \
+                       kernel/include/akernel/boot/limine.h \
+                       kernel/include/akernel/console/framebuffer.h \
+                       kernel/include/akernel/core/halt.h \
+                       pkg/akernel/fetch/fetch.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/fetch -c $< -o $@
+
+build/x86_64/framebuffer.o: kernel/src/console/framebuffer.c \
+                            kernel/include/akernel/console/framebuffer.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -c $< -o $@
+
+build/x86_64/limine-halt.o: kernel/src/core/halt.c kernel/include/akernel/core/halt.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -c $< -o $@
+
+build/x86_64/limine-fetch.o: pkg/akernel/fetch/fetch.c \
+                             pkg/akernel/fetch/fetch.h \
+                             pkg/akernel/fetch/include/internals.h \
+                             pkg/akernel/package.h \
+                             kernel/include/akernel/akPackage.h \
+                             kernel/include/akernel/version.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/fetch -c $< -o $@
+
+build/x86_64/akernel-limine.elf: build/x86_64/kernel.o \
+                                build/x86_64/limine.o \
+                                build/x86_64/framebuffer.o \
+                                build/x86_64/limine-halt.o \
+                                build/x86_64/limine-fetch.o \
+                                kernel/arch/x86_64/limine.ld
+	$(LD_X86_64) -m elf_x86_64 -z max-page-size=0x1000 \
+		-T kernel/arch/x86_64/limine.ld -o $@ \
+		build/x86_64/kernel.o build/x86_64/limine.o \
+		build/x86_64/framebuffer.o build/x86_64/limine-halt.o \
+		build/x86_64/limine-fetch.o
+
+$(LIMINE_ARCHIVE):
+	mkdir -p build
+	curl -fL --retry 3 -o $@.part $(LIMINE_URL)
+	printf '%s  %s\n' '$(LIMINE_SHA256)' '$@.part' | sha256sum -c -
+	mv $@.part $@
+
+$(LIMINE_DIR)/.ready: $(LIMINE_ARCHIVE)
+	printf '%s  %s\n' '$(LIMINE_SHA256)' '$<' | sha256sum -c -
+	rm -rf $(LIMINE_DIR)
+	tar -xzf $< -C build
+	touch $@
+
+$(LIMINE_DIR)/limine: $(LIMINE_DIR)/.ready
+	$(MAKE) -C $(LIMINE_DIR)
+
+build/akernel-1.1.109403-x86_64.iso: build/x86_64/akernel-limine.elf $(LIMINE_DIR)/limine limine.conf
+	rm -rf build/iso-root
+	mkdir -p build/iso-root/boot build/iso-root/EFI/BOOT
+	mkdir -p build/iso-root/boot/limine
+	cp limine.conf build/iso-root/boot/limine/limine.conf
+	cp $< build/iso-root/boot/akernel.elf
+	cp $(LIMINE_DIR)/limine-bios-cd.bin $(LIMINE_DIR)/limine-bios.sys \
+		$(LIMINE_DIR)/limine-uefi-cd.bin build/iso-root/boot/limine/
+	cp $(LIMINE_DIR)/LICENSE $(LIMINE_DIR)/3RDPARTY.md \
+		build/iso-root/boot/limine/
+	cp $(LIMINE_DIR)/BOOTX64.EFI build/iso-root/EFI/BOOT/
+	xorriso -as mkisofs -R -r -J \
+		-b boot/limine/limine-bios-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table \
+		-hfsplus -apm-block-size 2048 \
+		--efi-boot boot/limine/limine-uefi-cd.bin -efi-boot-part \
+		--efi-boot-image --protective-msdos-label \
+		build/iso-root -o $@
+	$(LIMINE_DIR)/limine bios-install $@
 
 clean:
 	rm -rf build

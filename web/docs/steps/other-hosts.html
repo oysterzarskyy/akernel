@@ -49,14 +49,14 @@
       <section class="doc-section" id="requirements">
         <p class="section-kicker">NATIVE BUILDS</p>
         <h2>Toolchain requirements</h2>
-        <p>If you already have a supported native toolchain, install GNU Make, GCC with <code>-m32</code> and <code>-m64</code> support, GNU binutils with i386 and x86-64 ELF linker modes, NASM, and Git using your OS package manager.</p>
-        <p>From a checkout of the repository, run <code>make</code>, then inspect <code>build/x86/kernel.elf</code> and <code>build/x86_64/kernel.elf</code> with ELF-aware tools. If your toolchain cannot produce these ELF targets, use the Ubuntu VM workflow instead of substituting a native executable format.</p>
+        <p>If you already have a supported native toolchain, install GNU Make, GCC with <code>-m32</code> and <code>-m64</code> support, GNU binutils with i386 and x86-64 ELF linker modes, NASM, Git, curl, tar, sha256sum, and xorriso.</p>
+        <p>From a checkout of the repository, run <code>make</code> for legacy ELF targets or <code>make iso</code> for the Limine x86-64 test image. If your host lacks the required tools, use the Ubuntu VM workflow instead of substituting a native executable format.</p>
       </section>
 
       <section class="doc-section" id="status">
-        <p class="section-kicker">BETA LIMITATION</p>
-        <h2>Build artifacts are not bootable</h2>
-        <p>This beta produces kernel ELF files only. There is no ISO, bootloader, boot protocol, package installer, or disk image. Do not install these files to your host or attempt to replace its operating system.</p>
+        <p class="section-kicker">BETA TESTING</p>
+        <h2>Use the ISO in a disposable VM</h2>
+        <p>The ISO target includes Limine for x86-64 BIOS and UEFI boot, but is only a kernel scaffold and not a package installer or complete OS. Boot it as virtual CD media in a disposable VM. Do not write it to a physical disk or replace your host operating system.</p>
       </section>
 
       <footer class="doc-footer">

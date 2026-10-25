@@ -1,7 +1,8 @@
 
-#include "kernel.h"
-#include "errCheck.h"
-#include "version.h"
+#include "akernel/kernel.h"
+#include "akernel/errCheck.h"
+#include "akernel/version.h"
+#include "akernel/core/halt.h"
 
 static const char *check_status(void)
 {
@@ -31,7 +32,5 @@ void kernel_main(void)
             (unsigned short)(0x0F00u | (unsigned char)status[i]);
     }
 
-    for (;;) {
-        __asm__ volatile ("hlt");
-    }
+    akernel_halt_forever();
 }

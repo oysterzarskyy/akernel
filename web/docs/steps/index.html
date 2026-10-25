@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#181818">
-    <meta name="description" content="Choose an operating-system-specific guide to build the akernel kernel ELF files.">
+    <meta name="description" content="Choose an operating-system-specific guide to build akernel ELF files or a Limine x86-64 test ISO.">
     <title>Build steps by OS — akernel</title>
     <link rel="stylesheet" href="../style.css">
   </head>
@@ -28,12 +28,12 @@
       <header class="doc-heading" id="overview">
         <p class="overline">BETA 1.1.109403 · HOST OS GUIDES</p>
         <h1>Build akernel on your OS</h1>
-        <p class="lead">Select a guide to install the build tools and compile the x86 and x86-64 ELF kernel files.</p>
+        <p class="lead">Select a guide to install the build tools, compile the kernel targets, and optionally create a Limine ISO for VM testing.</p>
       </header>
 
       <section class="callout" aria-label="Important project status">
         <span class="callout-mark">!</span>
-        <p><strong>Build only; do not install or boot.</strong> These steps assemble the kernel source into ELF files. This beta does not include an ISO, bootloader, installer, or disk image. It cannot replace or boot instead of Linux, Windows, or macOS.</p>
+        <p><strong>VM testing only.</strong> The opt-in <code>make iso</code> target assembles a Limine x86-64 ISO for virtual machines. It is not an installer or a complete operating system. Do not write it to a physical disk or replace your host operating system.</p>
       </section>
 
       <section class="doc-section" id="linux">
@@ -62,8 +62,8 @@
       <section class="doc-section" id="beta">
         <p class="section-kicker">RECOMMENDED BETA TEST</p>
         <h2>Use an isolated virtual machine</h2>
-        <p>For beta testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk or run an installer/image-writing command for akernel.</p>
-        <p>When the build succeeds, inspect the results with <code>file</code> and <code>readelf</code>. Successful ELF inspection verifies the output format only; it does not make the kernel bootable.</p>
+        <p>For beta testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
+        <p>On Linux, install <code>curl</code> and <code>xorriso</code> in addition to the standard build tools, then run <code>make iso</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; other hypervisors can boot the ISO as virtual CD media.</p>
       </section>
 
       <footer class="doc-footer">

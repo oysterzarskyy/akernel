@@ -1,7 +1,7 @@
 #ifndef AKERNEL_KERNEL_H
 #define AKERNEL_KERNEL_H
 
-#include "akPackage.h"
+#include "akernel/akPackage.h"
 
 void kernel_main(void);
 

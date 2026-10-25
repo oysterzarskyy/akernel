@@ -28,22 +28,22 @@
       <header class="doc-heading">
         <p class="overline">LINUX · APT</p>
         <h1>Build on Ubuntu or Debian</h1>
-        <p class="lead">Install GNU build tools, clone the source, and produce both kernel ELF targets.</p>
+        <p class="lead">Install GNU build tools, compile both ELF targets, and optionally create the Limine x86-64 test ISO.</p>
       </header>
 
       <section class="callout">
         <span class="callout-mark">!</span>
-        <p>This creates kernel ELF files only. It does not create an ISO or a bootable operating system. For beta testing, run these commands in a disposable Ubuntu VM; never write outputs to a disk.</p>
+        <p>The optional ISO target boots the x86-64 kernel through Limine. Test it only in a disposable VM; it is not an installer. Never write the ISO to a physical disk.</p>
       </section>
 
       <section class="doc-section" id="tools">
         <p class="section-kicker">01 — INSTALL TOOLS</p>
         <h2>Install dependencies</h2>
-        <p>Open a terminal and install GNU Make, GCC multilib support, binutils, NASM, Git, and file inspection tools:</p>
+        <p>Open a terminal and install the build tools, ISO utilities, and file inspection tools:</p>
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>Ubuntu / Debian</span></div>
           <pre><code>sudo apt update
-sudo apt install -y build-essential gcc-multilib binutils nasm git file</code></pre>
+sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso qemu-system-x86</code></pre>
         </div>
       </section>
 
@@ -74,16 +74,29 @@ git checkout v1.1.109403</code></pre>
         <p>To build a single target, run <code>make check-x86</code> or <code>make check-x86_64</code>.</p>
       </section>
 
+      <section class="doc-section" id="iso">
+        <p class="section-kicker">04 — BUILD AND TEST THE ISO</p>
+        <h2>Create a Limine boot image</h2>
+        <p>The opt-in target downloads the pinned Limine v12.9.4 binary package, verifies its SHA-256, and creates an x86-64 BIOS/UEFI ISO in <code>build/</code>:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
+          <pre><code>make iso
+make run-qemu</code></pre>
+        </div>
+        <p>Alternatively, attach <code>build/akernel-1.1.109403-x86_64.iso</code> as virtual CD media in a disposable VM. Do not attach a physical disk.</p>
+      </section>
+
       <section class="doc-section" id="verify">
-        <p class="section-kicker">04 — VERIFY OUTPUTS</p>
-        <h2>Inspect the ELF files</h2>
+        <p class="section-kicker">05 — VERIFY OUTPUTS</p>
+        <h2>Inspect the ELF and ISO files</h2>
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>output checks</span></div>
           <pre><code>file build/x86/kernel.elf build/x86_64/kernel.elf
 readelf -h build/x86/kernel.elf
-readelf -h build/x86_64/kernel.elf</code></pre>
+readelf -h build/x86_64/kernel.elf
+file build/akernel-1.1.109403-x86_64.iso</code></pre>
         </div>
-        <p>The build outputs are <code>build/x86/kernel.elf</code> and <code>build/x86_64/kernel.elf</code>. ELF format alone does not make them bootable. Do not use <code>qemu -kernel</code> or write them to a disk; this beta has no bootloader or boot protocol.</p>
+        <p>The legacy ELF outputs are not bootable on their own. Only the x86-64 Limine ISO target is intended for VM boot testing.</p>
       </section>
 
       <footer class="doc-footer">
