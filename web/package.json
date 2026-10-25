@@ -2,7 +2,8 @@
   "name": "akernel-forum-web",
   "private": true,
   "scripts": {
-    "build": "lessc --no-color style.less style.css && lessc --no-color docs/style.less docs/style.css && lessc --no-color loader/style.less loader/style.css"
+    "build": "lessc --no-color style.less style.css && lessc --no-color docs/style.less docs/style.css && lessc --no-color loader/style.less loader/style.css",
+    "check": "node check-site.js && node --check forum.js && node --check loader/loader.js"
   },
   "devDependencies": {
     "less": "4.2.2"

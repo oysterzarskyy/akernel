@@ -65,8 +65,14 @@ environment with `curl`, `sha256sum`, `tar`, and `xorriso`.
 
 The community forum and handbook are in [`web/`](web/). LESS sources are
 compiled into browser-ready CSS with `npm ci` and `npm run build` from `web/`.
-The static site can be deployed to Cloudflare Pages with `web/` as the build
-root and `npm run build` as the build command. The forum uses the cookie-backed
+The static site is published to GitHub Pages by
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml). The workflow
+installs the web dependencies, compiles LESS, and deploys the static output.
+In **Settings → Pages**, set the build and deployment source to **GitHub
+Actions**. The [Bug checker workflow](.github/workflows/build.yml) builds both
+kernel targets and checks website styles, local links, and JavaScript syntax.
+For local website validation, run `npm ci`, `npm run build`, then `npm run check`
+from `web/`. The forum uses the cookie-backed
 JSON API in [`api/server.py`](api/server.py) for anonymous sessions, discussions,
 and replies. Run the API and local site together with Python 3:
 
@@ -75,7 +81,7 @@ python api/server.py
 ```
 
 Set `AKERNEL_API_PORT` or `AKERNEL_DATABASE` to change the API port or SQLite
-database path. Cloudflare Pages serves only the static site, so the API must be
+database path. GitHub Pages serves only the static site, so the API must be
 hosted separately or placed behind a same-origin reverse proxy. Set
 `AKERNEL_ALLOWED_ORIGIN` to the exact site origin. For a cross-site HTTPS API,
 also set `AKERNEL_COOKIE_SAMESITE=None` and `AKERNEL_COOKIE_SECURE=1`. The
@@ -120,6 +126,10 @@ interface stub; it is not an installer or complete package manager. See the
    ```
 
 3. Open a pull request from your branch to `oysterzarskyy/akernel`.
+
+Use the repository's issue forms to report reproducible bugs or propose
+features. The bug form links to private vulnerability reporting for security
+issues; do not post exploitable details publicly.
 
 To publish a source release, push a version tag and create a GitHub Release for
 that tag:

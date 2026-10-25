@@ -1,4 +1,4 @@
-name: Build kernel scaffolds
+name: Bug checker
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  kernel:
     name: Build ${{ matrix.arch }}
     runs-on: ubuntu-latest
     strategy:
@@ -26,3 +26,23 @@ jobs:
           nasm -v
       - name: Compile and link
         run: make check-${{ matrix.arch }}
+
+  website:
+    name: Check website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install website dependencies
+        run: npm ci
+        working-directory: web
+      - name: Build website stylesheets
+        run: npm run build
+        working-directory: web
+      - name: Check website links and JavaScript syntax
+        run: npm run check
+        working-directory: web

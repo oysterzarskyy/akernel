@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a reproducible problem in akernel, its build, or the website.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please search existing issues first and include only information you are comfortable sharing publicly.
+        For security vulnerabilities, use the private reporting link instead of a public issue.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Include the beta version, commit, or workflow run URL if known.
+      placeholder: "1.1.109403 / commit SHA"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Kernel boot or runtime
+        - Kernel build or compiler
+        - Website or browser demo
+        - Forum API
+        - Documentation or packages
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Host OS, architecture, browser or VM, and relevant tool versions.
+      placeholder: "Ubuntu 24.04, x86_64, GCC 13, QEMU 8"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: List the smallest sequence that reliably triggers the problem.
+      placeholder: |
+        1. Run ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the exact error message and relevant sanitized logs.
+      placeholder: What happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add screenshots or other details that help reproduce the issue. Remove secrets and personal data.
+    validations:
+      required: false

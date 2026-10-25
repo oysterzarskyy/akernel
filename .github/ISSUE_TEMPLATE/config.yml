@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Build and troubleshooting documentation
+    url: https://github.com/oysterzarskyy/akernel/tree/main/web/docs
+    about: Check the host-specific build guides and project status before reporting a problem.
+  - name: Report a security vulnerability privately
+    url: https://github.com/oysterzarskyy/akernel/security/advisories/new
+    about: Do not disclose exploitable vulnerabilities in a public issue.
