@@ -1,15 +1,16 @@
 
 #include "kernel.h"
 #include "errCheck.h"
+#include "version.h"
 
 static const char *check_status(void)
 {
-    return "0";
+    return "scaffold";
 }
 
 void kernel_main(void)
 {
-    static const char message[] = "Hello from akernel!";
+    static const char message[] = "akernel v" AKERNEL_VERSION;
     static const char status_message[] = "Kernel status: ";
     volatile unsigned short *const video_memory =
         (volatile unsigned short *)0xB8000;

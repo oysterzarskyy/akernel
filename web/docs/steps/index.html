@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Choose an operating-system-specific guide to build the akernel kernel ELF files.">
+    <title>Build steps by OS — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Build steps</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="../../index.html">Forum</a>
+        <a href="../index.html">Handbook</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="../index.html">Documentation</a><span>/</span>Build steps</div>
+      <header class="doc-heading" id="overview">
+        <p class="overline">BETA 1.1.109403 · HOST OS GUIDES</p>
+        <h1>Build akernel on your OS</h1>
+        <p class="lead">Select a guide to install the build tools and compile the x86 and x86-64 ELF kernel files.</p>
+      </header>
+
+      <section class="callout" aria-label="Important project status">
+        <span class="callout-mark">!</span>
+        <p><strong>Build only; do not install or boot.</strong> These steps assemble the kernel source into ELF files. This beta does not include an ISO, bootloader, installer, or disk image. It cannot replace or boot instead of Linux, Windows, or macOS.</p>
+      </section>
+
+      <section class="doc-section" id="linux">
+        <p class="section-kicker">LINUX</p>
+        <h2>Native Linux builds</h2>
+        <ul class="guide-list">
+          <li><a href="linux-ubuntu.html">Ubuntu and Debian</a> — APT packages and GNU Make.</li>
+          <li><a href="linux-fedora.html">Fedora</a> — DNF packages and GNU Make.</li>
+          <li><a href="linux-arch.html">Arch Linux</a> — pacman packages and GNU Make.</li>
+          <li><a href="other-hosts.html">Another Linux or Unix-like OS</a> — Requirements and the Linux VM fallback.</li>
+        </ul>
+        <p>For another Linux distribution, install GNU Make, GCC with 32-bit compile support, ELF-capable GNU binutils, NASM, and Git using that distribution's package manager. The build commands and expected outputs are the same as in the Linux guides.</p>
+      </section>
+
+      <section class="doc-section" id="other-hosts">
+        <p class="section-kicker">OTHER DESKTOP OPERATING SYSTEMS</p>
+        <h2>Build from Windows or macOS</h2>
+        <ul class="guide-list">
+          <li><a href="windows-wsl.html">Windows 10/11 with WSL 2 and Ubuntu</a> — Recommended Windows workflow.</li>
+          <li><a href="macos-vm.html">macOS with an Ubuntu virtual machine</a> — Use an x86-64 Linux guest so the required ELF toolchain is available.</li>
+          <li><a href="other-hosts.html">Another host OS</a> — Use a Linux VM when an ELF toolchain is unavailable.</li>
+        </ul>
+        <p>These instructions run the build tools in a Linux environment. Native Windows PE or macOS Mach-O compilers do not produce the ELF targets expected by this project.</p>
+      </section>
+
+      <section class="doc-section" id="beta">
+        <p class="section-kicker">RECOMMENDED BETA TEST</p>
+        <h2>Use an isolated virtual machine</h2>
+        <p>For beta testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk or run an installer/image-writing command for akernel.</p>
+        <p>When the build succeeds, inspect the results with <code>file</code> and <code>readelf</code>. Successful ELF inspection verifies the output format only; it does not make the kernel bootable.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="../index.html">Back to handbook</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Project source ↗</a>
+      </footer>
+    </main>
+  </body>
+</html>

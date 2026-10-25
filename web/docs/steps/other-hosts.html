@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Build akernel from an unsupported Linux or Unix-like host using a disposable Ubuntu virtual machine.">
+    <title>Other host operating systems — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Other host OS</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">All OS guides</a>
+        <a href="../../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="index.html">Build steps</a><span>/</span>Other host OS</div>
+      <header class="doc-heading">
+        <p class="overline">OTHER LINUX AND UNIX-LIKE HOSTS</p>
+        <h1>Build from another OS</h1>
+        <p class="lead">Use a Linux guest when your host does not provide the expected GCC and ELF linker setup.</p>
+      </header>
+
+      <section class="callout">
+        <span class="callout-mark">!</span>
+        <p>The host operating system is not the kernel target. akernel's Makefile expects a GNU-compatible shell, GNU Make, GCC, NASM, and ELF-capable linkers. Native output formats such as Mach-O or PE are not substitutes for ELF.</p>
+      </section>
+
+      <section class="doc-section" id="vm">
+        <p class="section-kicker">RECOMMENDED FALLBACK</p>
+        <h2>Create an isolated Ubuntu VM</h2>
+        <ol class="steps">
+          <li><span>01</span><p>Use a desktop hypervisor available for your host OS and create an Ubuntu 24.04 LTS x86-64 guest with a virtual disk, 2 CPU cores, and at least 2 GB RAM.</p></li>
+          <li><span>02</span><p>Install Ubuntu only on the virtual disk. Never attach a physical host disk; take a snapshot before testing.</p></li>
+          <li><span>03</span><p>Follow the <a href="linux-ubuntu.html">Ubuntu build guide</a> inside the guest to install dependencies, clone the source, and build.</p></li>
+        </ol>
+      </section>
+
+      <section class="doc-section" id="requirements">
+        <p class="section-kicker">NATIVE BUILDS</p>
+        <h2>Toolchain requirements</h2>
+        <p>If you already have a supported native toolchain, install GNU Make, GCC with <code>-m32</code> and <code>-m64</code> support, GNU binutils with i386 and x86-64 ELF linker modes, NASM, and Git using your OS package manager.</p>
+        <p>From a checkout of the repository, run <code>make</code>, then inspect <code>build/x86/kernel.elf</code> and <code>build/x86_64/kernel.elf</code> with ELF-aware tools. If your toolchain cannot produce these ELF targets, use the Ubuntu VM workflow instead of substituting a native executable format.</p>
+      </section>
+
+      <section class="doc-section" id="status">
+        <p class="section-kicker">BETA LIMITATION</p>
+        <h2>Build artifacts are not bootable</h2>
+        <p>This beta produces kernel ELF files only. There is no ISO, bootloader, boot protocol, package installer, or disk image. Do not install these files to your host or attempt to replace its operating system.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="index.html">All build guides</a>
+        <a href="../index.html">Handbook</a>
+      </footer>
+    </main>
+  </body>
+</html>

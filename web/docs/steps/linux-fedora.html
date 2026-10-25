@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Step-by-step Fedora instructions for building akernel.">
+    <title>Build on Fedora — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Fedora</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">All OS guides</a>
+        <a href="../../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="index.html">Build steps</a><span>/</span>Fedora</div>
+      <header class="doc-heading">
+        <p class="overline">LINUX · DNF</p>
+        <h1>Build on Fedora</h1>
+        <p class="lead">Install the compiler, GNU binutils, Make, NASM, and Git to compile both ELF targets.</p>
+      </header>
+
+      <section class="callout">
+        <span class="callout-mark">!</span>
+        <p>This builds ELF kernel files only, not an ISO or bootable OS. Use a disposable VM for beta testing; do not write the outputs to a disk.</p>
+      </section>
+
+      <section class="doc-section" id="tools">
+        <p class="section-kicker">01 — INSTALL TOOLS</p>
+        <h2>Install dependencies</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>Fedora</span></div>
+          <pre><code>sudo dnf install -y gcc make binutils nasm git file</code></pre>
+        </div>
+        <p>The build is freestanding and does not link against the guest's C library. GCC must accept the <code>-m32</code> and <code>-m64</code> options; GNU binutils must provide the i386 and x86-64 ELF link modes.</p>
+      </section>
+
+      <section class="doc-section" id="source">
+        <p class="section-kicker">02 — GET THE SOURCE</p>
+        <h2>Clone the repository</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>clone default branch</span></div>
+          <pre><code>git clone https://github.com/oysterzarskyy/akernel.git
+cd akernel</code></pre>
+        </div>
+        <p>To test version 1.1.109403 after its tag is published, run <code>git fetch --tags</code> followed by <code>git checkout v1.1.109403</code>.</p>
+      </section>
+
+      <section class="doc-section" id="build">
+        <p class="section-kicker">03 — COMPILE AND VERIFY</p>
+        <h2>Build and inspect outputs</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
+          <pre><code>make
+file build/x86/kernel.elf build/x86_64/kernel.elf
+readelf -h build/x86/kernel.elf
+readelf -h build/x86_64/kernel.elf</code></pre>
+        </div>
+        <p>Outputs are under <code>build/x86/</code> and <code>build/x86_64/</code>. Use <code>make check-x86</code> or <code>make check-x86_64</code> to compile one architecture. Inspecting ELF headers does not test booting; the kernel has no bootloader or boot protocol.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="index.html">All build guides</a>
+        <a href="../index.html">Handbook</a>
+      </footer>
+    </main>
+  </body>
+</html>

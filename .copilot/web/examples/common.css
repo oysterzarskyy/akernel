@@ -1,0 +1,47 @@
+/*
+just do not touch this, only touch up the classic look
+
+COMMENTS:
+dont use modern fonts, 
+only classic arial or times new roman, 
+and dont use modern colors, 
+only classic colors like: 
+black, white, and gray.
+*/
+
+:root {
+    --accent-bg-forums: #2a2a2a;
+    --accent-bg-nav-forums: #181818;
+    --button-forums: #2a2a2a;
+    --button-hover-forums: #181818;
+}
+body{
+    background-color: var(--accent-bg-forums);
+    color: #fff;
+}
+button {
+    background-color: var(--button-forums);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+nav {
+    background-color: var(--accent-bg-nav-forums);
+    padding: 10px;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+navbar {
+    text-align: left;
+    /* navbar is on top of the page */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}

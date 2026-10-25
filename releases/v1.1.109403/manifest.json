@@ -1,0 +1,30 @@
+{
+  "project": "akernel",
+  "version": "1.1.109403",
+  "channel": "beta",
+  "release_tag": "v1.1.109403 /\"Spanning Seashells\"//",
+  "kernel_outputs": [
+    {
+      "architecture": "x86",
+      "format": "ELF",
+      "build_path": "build/x86/kernel.elf",
+      "bootable": false
+    },
+    {
+      "architecture": "x86_64",
+      "format": "ELF",
+      "build_path": "build/x86_64/kernel.elf",
+      "bootable": false
+    }
+  ],
+  "iso": {
+    "planned_filename": "akernel-1.1.109403-x86_64.iso",
+    "status": "not_available",
+    "reason": "No bootloader, boot protocol, or disk-image build target exists."
+  },
+  "packages": {
+    "status": "metadata_and_stubs_only",
+    "installable": false
+  },
+  "recommended_test": "Build and inspect the ELF outputs in a disposable Ubuntu 24.04 LTS virtual machine."
+}

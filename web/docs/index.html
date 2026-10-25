@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Build and beta-test akernel 1.1.109403 in a disposable Linux virtual machine.">
+    <title>Documentation — akernel</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Documentation</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel/releases">Releases ↗</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="Documentation navigation">
+        <p class="sidebar-heading">HANDBOOK</p>
+        <a class="sidebar-link active" href="#overview">Overview</a>
+        <a class="sidebar-link" href="#requirements">Requirements</a>
+        <a class="sidebar-link" href="steps/">Build guides by OS</a>
+        <a class="sidebar-link" href="#layout">Project layout</a>
+        <a class="sidebar-link" href="#packages">Packages</a>
+        <a class="sidebar-link" href="#contributing">Contributing</a>
+        <a class="sidebar-link" href="#releases">Releases</a>
+        <a class="sidebar-link" href="#forum-api">Forum API</a>
+        <div class="sidebar-note">
+          <span class="status-dot"></span>
+          <span>Beta 1.1.109403<br><strong>ELF scaffold</strong></span>
+        </div>
+      </aside>
+
+      <main class="document">
+        <div class="breadcrumb"><a href="../">akernel</a><span>/</span>Documentation</div>
+        <header class="doc-heading" id="overview">
+          <p class="overline">PROJECT HANDBOOK · BETA 1.1.109403</p>
+          <h1>Documentation</h1>
+          <p class="lead">A field guide to building, exploring, and contributing to akernel.</p>
+          <div class="doc-meta"><span>Getting started</span><span>·</span><span>x86 &amp; x86-64</span></div>
+        </header>
+
+        <section class="callout" aria-label="Project status">
+          <span class="callout-mark">i</span>
+          <p><strong>Project status.</strong> akernel builds freestanding kernel ELF files. It is not yet a bootable operating system and does not produce a disk image. A bootloader and its required CPU mode and memory mappings are not included.</p>
+        </section>
+
+        <section class="doc-section" id="requirements">
+          <p class="section-kicker">01 — BEFORE YOU BEGIN</p>
+          <h2>Build requirements</h2>
+          <p>Both architecture targets use the same C source, with separate assembly entry points and linker scripts. You will need:</p>
+          <ul class="check-list">
+            <li>GNU Make</li>
+            <li>GCC with 32-bit compilation support</li>
+            <li>GNU binutils with i386 and x86-64 ELF linkers</li>
+            <li>NASM</li>
+          </ul>
+        </section>
+
+        <section class="doc-section" id="build-guides">
+          <p class="section-kicker">02 — BUILD BY HOST OPERATING SYSTEM</p>
+          <h2>Step-by-step build guides</h2>
+          <p>Choose the instructions for the computer you are building on. Linux distributions have separate package-manager steps; Windows uses WSL 2, and macOS uses a disposable Linux VM. These are instructions for compiling the kernel sources, not for assembling a bootable OS image.</p>
+          <ul class="guide-list">
+            <li><a href="steps/index.html">All build guides and safety notes</a></li>
+            <li><a href="steps/linux-ubuntu.html">Ubuntu and Debian Linux</a></li>
+            <li><a href="steps/linux-fedora.html">Fedora Linux</a></li>
+            <li><a href="steps/linux-arch.html">Arch Linux</a></li>
+            <li><a href="steps/windows-wsl.html">Windows 10/11 with WSL 2</a></li>
+            <li><a href="steps/macos-vm.html">macOS with an Ubuntu VM</a></li>
+          </ul>
+          <div class="note-line"><strong>Safety</strong><span>This beta only creates ELF kernel files. It has no bootloader, installer, or ISO; do not write its outputs to a disk or replace your operating system.</span></div>
+        </section>
+
+        <section class="doc-section" id="layout">
+          <p class="section-kicker">06 — THE SOURCE</p>
+          <h2>Project layout</h2>
+          <div class="file-list">
+            <div><code>main.c</code><span>Freestanding kernel entry routine and startup banner.</span></div>
+            <div><code>include/</code><span>Kernel declarations, error codes, and version metadata.</span></div>
+            <div><code>arch/x86/</code><span>32-bit entry assembly and linker script.</span></div>
+            <div><code>arch/x86_64/</code><span>64-bit entry assembly and linker script.</span></div>
+            <div><code>pkg/akernel/</code><span>Package descriptors, the fetch system-info renderer, and sys interface stub.</span></div>
+            <div><code>releases/</code><span>Versioned release notes and artifact availability manifests.</span></div>
+            <div><code>web/docs/steps/</code><span>Standalone build instructions for Linux, Windows, and macOS hosts.</span></div>
+            <div><code>Makefile</code><span>Build targets for both ELF architectures.</span></div>
+            <div><code>web/</code><span>Project landing page, documentation, and visual identity.</span></div>
+          </div>
+          <p>The entry points initialize a stack and call <code>kernel_main</code>. The sample writes to VGA text memory at <code>0xB8000</code>, so a compatible mapping is required from the loader.</p>
+        </section>
+
+        <section class="doc-section" id="packages">
+          <p class="section-kicker">07 — PACKAGE STATUS</p>
+          <h2>Packages in this beta</h2>
+          <p>The current package code is metadata and interface scaffolding. It is not an installer, package repository, or complete runtime service. Package sources are not part of the default <code>make</code> targets.</p>
+          <div class="file-list">
+            <div><code>pkg/akernel/package.h</code><span>Common package descriptor, version comparison, and target compatibility checks.</span></div>
+            <div><code>pkg/akernel/fetch/</code><span>Text system-information renderer with compact ASCII artwork; a caller-provided writer handles output.</span></div>
+            <div><code>pkg/akernel/sys/</code><span>System package descriptor stub; system calls and runtime services are not implemented.</span></div>
+            <div><code>include/akPackage.h</code><span>Kernel version, x86/x86-64, freestanding, and ELF target metadata.</span></div>
+          </div>
+          <p>Both sample package descriptors require kernel 1.1.0 or newer, freestanding ELF builds, and a supported x86 architecture. These checks do not install or execute packages.</p>
+        </section>
+
+        <section class="doc-section" id="contributing">
+          <p class="section-kicker">08 — CONTRIBUTE</p>
+          <h2>Make a contribution</h2>
+          <ol class="steps">
+            <li><span>01</span><p>Fork <a href="https://github.com/oysterzarskyy/akernel">the repository</a> and clone your fork.</p></li>
+            <li><span>02</span><p>Create a focused branch, make your changes, and run <code>make</code>.</p></li>
+            <li><span>03</span><p>Commit the files you changed and push your branch to your fork.</p></li>
+            <li><span>04</span><p>Open a pull request against <code>oysterzarskyy/akernel</code>.</p></li>
+          </ol>
+          <div class="code-block">
+            <div class="code-caption"><span>GIT</span><span>example workflow</span></div>
+            <pre><code>git switch -c my-change
+make
+git add path/to/changed-files
+git commit -m "Describe the change"
+git push -u origin my-change</code></pre>
+          </div>
+        </section>
+
+        <section class="doc-section" id="releases">
+          <p class="section-kicker">09 — PUBLISH</p>
+          <h2>Beta release 1.1.109403</h2>
+          <p>The versioned release record is in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.1.109403">the releases folder ↗</a>. The repository does not yet have a published version tag or GitHub Release. There is also no ISO for this beta: the project has no bootloader, defined boot protocol, or disk-image build target. The release manifest records the planned ISO filename as unavailable; it is not a downloadable artifact.</p>
+          <p>When publishing source, tag the version and create a GitHub Release. ELF files may be attached as build outputs, clearly labeled as non-bootable kernel scaffolds.</p>
+          <div class="code-block">
+            <div class="code-caption"><span>GIT</span><span>beta 1.1.109403</span></div>
+            <pre><code>git tag v1.1.109403
+git push origin v1.1.109403</code></pre>
+          </div>
+          <p>GitHub Pages can publish the forum and this handbook. Enable <strong>Settings → Pages → Build and deployment → GitHub Actions</strong> in the repository.</p>
+        </section>
+
+        <section class="doc-section" id="forum-api">
+          <p class="section-kicker">10 — COMMUNITY</p>
+          <h2>Forum API and anonymous accounts</h2>
+          <p>The forum front end is connected to the JSON API in <code>api/server.py</code>. The API assigns a persistent anonymous guest identity using a long-lived <code>HttpOnly</code> cookie. The cookie is not readable by page scripts; the browser sends it automatically with requests. Clearing browser cookies loses access to that anonymous identity, so this is not a recoverable registered account.</p>
+          <p>GitHub Pages cannot run the API process. Host the API separately or put it behind a same-origin reverse proxy, then set the <code>akernel-api-base</code> meta value in <code>web/index.html</code> to the API prefix (for example, <code>https://api.example.com/api</code>).</p>
+          <div class="code-block">
+            <div class="code-caption"><span>LOCAL API</span><span>Python 3, no external packages</span></div>
+            <pre><code>python api/server.py
+# Open http://127.0.0.1:8787</code></pre>
+          </div>
+          <p>For a separately hosted site, configure <code>AKERNEL_ALLOWED_ORIGIN</code> to the exact website origin. Cross-site cookies require HTTPS and these settings:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>COOKIE SETTINGS</span><span>HTTPS deployments only</span></div>
+            <pre><code>AKERNEL_ALLOWED_ORIGIN=https://your-site.example
+AKERNEL_COOKIE_SAMESITE=None
+AKERNEL_COOKIE_SECURE=1</code></pre>
+          </div>
+          <p>The API currently supports anonymous sessions, listing/filtering discussions, creating discussions, reading a discussion with replies, and posting replies. Data is stored in SQLite at <code>api/forum.sqlite3</code> by default. Back up this database and put the service behind a production HTTPS reverse proxy before exposing it publicly.</p>
+        </section>
+
+        <footer class="doc-footer">
+          <span>akernel · GPL-3.0-or-later</span>
+          <a href="https://github.com/oysterzarskyy/akernel">Contribute on GitHub ↗</a>
+        </footer>
+      </main>
+
+      <aside class="contents" aria-label="On this page">
+        <p class="sidebar-heading">ON THIS PAGE</p>
+        <a href="#requirements">Build requirements</a>
+        <a href="#build-guides">Build guides by OS</a>
+        <a href="#layout">Project layout</a>
+        <a href="#packages">Packages</a>
+        <a href="#contributing">Contributing</a>
+        <a href="#releases">Releases</a>
+        <a href="#forum-api">Forum API</a>
+      </aside>
+    </div>
+  </body>
+</html>

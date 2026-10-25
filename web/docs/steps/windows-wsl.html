@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Step-by-step Windows instructions to build akernel in Ubuntu on WSL 2.">
+    <title>Build on Windows with WSL 2 — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Windows / WSL 2</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">All OS guides</a>
+        <a href="../../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="index.html">Build steps</a><span>/</span>Windows with WSL 2</div>
+      <header class="doc-heading">
+        <p class="overline">WINDOWS · WSL 2 · UBUNTU</p>
+        <h1>Build on Windows</h1>
+        <p class="lead">Use Ubuntu in WSL 2 to run the Linux ELF compiler and build tools.</p>
+      </header>
+
+      <section class="callout">
+        <span class="callout-mark">!</span>
+        <p>Windows does not build a native Windows executable here. WSL 2 creates ELF kernel files inside its Linux environment; this beta is not a Windows installer, ISO, or bootable OS.</p>
+      </section>
+
+      <section class="doc-section" id="install-wsl">
+        <p class="section-kicker">01 — ENABLE WSL 2</p>
+        <h2>Install Ubuntu from PowerShell</h2>
+        <p>Open Windows Terminal or PowerShell as Administrator and run:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>POWERSHELL · ADMINISTRATOR</span><span>Windows 10/11</span></div>
+          <pre><code>wsl --install -d Ubuntu-24.04</code></pre>
+        </div>
+        <p>Restart if Windows requests it, open Ubuntu from the Start menu, and complete the first-run Linux username setup.</p>
+      </section>
+
+      <section class="doc-section" id="build">
+        <p class="section-kicker">02 — BUILD IN UBUNTU</p>
+        <h2>Install tools and compile</h2>
+        <p>Run the following inside the Ubuntu terminal, not PowerShell. Keep the checkout under the Linux home directory (for example, <code>~/akernel</code>) for better filesystem performance:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>UBUNTU · WSL 2</span><span>build both architectures</span></div>
+          <pre><code>sudo apt update
+sudo apt install -y build-essential gcc-multilib binutils nasm git file
+git clone https://github.com/oysterzarskyy/akernel.git
+cd akernel
+make</code></pre>
+        </div>
+        <p>The current repository does not yet publish a <code>v1.1.109403</code> Git tag. When it is available, run <code>git fetch --tags</code> and <code>git checkout v1.1.109403</code> before building that version.</p>
+      </section>
+
+      <section class="doc-section" id="verify">
+        <p class="section-kicker">03 — VERIFY</p>
+        <h2>Inspect the generated ELF files</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>UBUNTU · WSL 2</span><span>build directory</span></div>
+          <pre><code>file build/x86/kernel.elf build/x86_64/kernel.elf
+readelf -h build/x86/kernel.elf
+readelf -h build/x86_64/kernel.elf</code></pre>
+        </div>
+        <p>This verifies file format and architecture only. Do not attach a physical disk, write a disk image, or try to replace the Windows or WSL bootloader.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="index.html">All build guides</a>
+        <a href="../index.html">Handbook</a>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "akernel",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/pkg/akernel",
+                "${workspaceFolder}/pkg/akernel/fetch",
+                "${workspaceFolder}/pkg/akernel/fetch/include",
+                "${workspaceFolder}/pkg/akernel/sys"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

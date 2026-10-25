@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="The akernel community forum for kernel development, hardware, and project questions.">
+    <meta name="akernel-api-base" content="/api">
+    <title>Forum — akernel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="forum.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="site-name" href="./">akernel <span>forum</span></a>
+        <a class="center-logo" href="./" aria-label="akernel forum home">
+          <span class="brand-mark" aria-hidden="true">a</span>
+        </a>
+        <div class="nav-tools">
+          <button class="nav-toggle" id="categories-toggle" type="button" aria-expanded="false" aria-controls="categories-panel">
+            Categories <span class="toggle-arrow" aria-hidden="true">▼</span>
+          </button>
+          <button class="nav-toggle" id="links-toggle" type="button" aria-expanded="false" aria-controls="links-panel">
+            More <span class="toggle-arrow" aria-hidden="true">▼</span>
+          </button>
+          <div class="nav-panel category-panel" id="categories-panel" hidden>
+            <p class="panel-title">FORUM CATEGORIES</p>
+            <button class="category-link selected" data-category="all" type="button">All discussions</button>
+            <button class="category-link" data-category="kernel" type="button">Kernel development</button>
+            <button class="category-link" data-category="hardware" type="button">Hardware &amp; boot</button>
+            <button class="category-link" data-category="help" type="button">Help &amp; questions</button>
+            <button class="category-link" data-category="community" type="button">Community</button>
+            <div class="panel-rule"></div>
+            <button class="nav-panel-action" id="nav-new-topic" type="button">＋ New discussion</button>
+          </div>
+          <div class="nav-panel links-panel" id="links-panel" hidden>
+            <p class="panel-title">AKERNEL LINKS</p>
+            <a href="docs/">Documentation</a>
+            <a href="https://github.com/oysterzarskyy/akernel">Project source</a>
+            <div class="panel-rule"></div>
+            <p class="account-caption">SIGNED IN AS</p>
+            <p class="account-area">
+              <span class="account-indicator" aria-hidden="true"></span>
+              <span id="account-name">Connecting…</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="discussion-area" aria-labelledby="page-title">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">AKERNEL COMMUNITY</p>
+            <h1 id="page-title">Discussions</h1>
+            <p class="page-description">Ask questions, share progress, and build the kernel together.</p>
+          </div>
+          <label class="search-box">
+            <span class="visually-hidden">Search discussions</span>
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" placeholder="Search discussions" autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+        </div>
+
+        <div class="filter-row">
+          <div class="feed-tabs" role="tablist" aria-label="Sort discussions">
+            <button class="feed-tab active" data-sort="latest" type="button" role="tab" aria-selected="true">Latest</button>
+            <button class="feed-tab" data-sort="active" type="button" role="tab" aria-selected="false">Recently active</button>
+          </div>
+          <span class="discussion-count" id="discussion-count">Loading discussions…</span>
+        </div>
+
+        <div class="api-notice" id="api-notice" role="status" hidden>
+          <strong>Forum API unavailable</strong>
+          <span id="api-error">Could not connect to the forum service.</span>
+          <a href="docs/#forum-api">API setup</a>
+        </div>
+
+        <section class="discussion-list" id="discussion-list" aria-label="Discussion list" aria-live="polite"></section>
+        <div class="empty-state" id="empty-state" hidden>
+          <span class="empty-mark" aria-hidden="true">a</span>
+          <h2>No discussions yet</h2>
+          <p>Start a conversation and give the community something to build on.</p>
+          <button class="new-topic-button" id="empty-new-topic" type="button">＋ Start a discussion</button>
+        </div>
+
+        <footer class="forum-footer">
+          <span>akernel v1.1.109403</span>
+          <span>Community forum · <a href="https://github.com/oysterzarskyy/akernel">Open source</a></span>
+        </footer>
+      </section>
+    </main>
+
+    <dialog class="modal" id="new-topic-dialog" aria-labelledby="new-topic-title">
+      <form id="new-topic-form">
+        <div class="modal-heading">
+          <div>
+            <p class="eyebrow">START A CONVERSATION</p>
+            <h2 id="new-topic-title">New discussion</h2>
+          </div>
+          <button class="close-button" data-close-dialog type="button" aria-label="Close">×</button>
+        </div>
+        <label class="field-label" for="topic-title">Title</label>
+        <input id="topic-title" name="title" required minlength="5" maxlength="120" placeholder="What would you like to discuss?">
+        <label class="field-label" for="topic-category">Category</label>
+        <select id="topic-category" name="category" required>
+          <option value="kernel">Kernel development</option>
+          <option value="hardware">Hardware &amp; boot</option>
+          <option value="help">Help &amp; questions</option>
+          <option value="community">Community</option>
+        </select>
+        <label class="field-label" for="topic-body">Details</label>
+        <textarea id="topic-body" name="body" required minlength="20" maxlength="10000" rows="7" placeholder="Add context, what you tried, or what you have learned…"></textarea>
+        <p class="form-error" id="topic-form-error" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button class="secondary-button" data-close-dialog type="button">Cancel</button>
+          <button class="new-topic-button" type="submit">Post discussion</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal topic-modal" id="topic-dialog" aria-labelledby="topic-dialog-title">
+      <div id="topic-detail"></div>
+      <form id="reply-form" class="reply-form">
+        <label class="field-label" for="reply-body">Add a reply</label>
+        <textarea id="reply-body" name="body" required minlength="1" maxlength="5000" rows="4" placeholder="Share a helpful response…"></textarea>
+        <p class="form-error" id="reply-form-error" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button class="secondary-button" data-close-dialog type="button">Close</button>
+          <button class="new-topic-button" type="submit">Reply</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

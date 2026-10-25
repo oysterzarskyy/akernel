@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Step-by-step macOS instructions to build akernel in an isolated Ubuntu virtual machine.">
+    <title>Build on macOS with a Linux VM — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">macOS / Linux VM</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">All OS guides</a>
+        <a href="../../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="index.html">Build steps</a><span>/</span>macOS with a Linux VM</div>
+      <header class="doc-heading">
+        <p class="overline">MACOS · UBUNTU VIRTUAL MACHINE</p>
+        <h1>Build on macOS</h1>
+        <p class="lead">Build in an isolated x86-64 Ubuntu guest with the ELF tools this project expects.</p>
+      </header>
+
+      <section class="callout">
+        <span class="callout-mark">!</span>
+        <p>Apple's native toolchain produces Mach-O files, not the ELF targets used here. A Linux VM is the recommended path. On Apple Silicon, select an x86-64 Ubuntu guest with emulation; it may run more slowly than a native ARM guest.</p>
+      </section>
+
+      <section class="doc-section" id="vm">
+        <p class="section-kicker">01 — CREATE A LINUX GUEST</p>
+        <h2>Prepare an isolated VM</h2>
+        <ol class="steps">
+          <li><span>01</span><p>Install a desktop hypervisor that supports an x86-64 Ubuntu guest (for example, UTM with x86-64 emulation on Apple Silicon, or an x86-64 virtualization option on Intel Macs).</p></li>
+          <li><span>02</span><p>Create a fresh Ubuntu 24.04 LTS x86-64 VM with a 20 GB or larger virtual disk, 2 CPU cores, and at least 2 GB RAM. Do not attach a physical Mac disk.</p></li>
+          <li><span>03</span><p>Install Ubuntu in the virtual disk, boot into the guest, and take a VM snapshot before beta testing.</p></li>
+        </ol>
+      </section>
+
+      <section class="doc-section" id="build">
+        <p class="section-kicker">02 — BUILD IN UBUNTU</p>
+        <h2>Install tools and compile</h2>
+        <p>Open a terminal inside the Ubuntu guest and run:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>UBUNTU · VM GUEST</span><span>build both architectures</span></div>
+          <pre><code>sudo apt update
+sudo apt install -y build-essential gcc-multilib binutils nasm git file
+git clone https://github.com/oysterzarskyy/akernel.git
+cd akernel
+make</code></pre>
+        </div>
+        <p>The current repository has no published version tag. When <code>v1.1.109403</code> is published, use <code>git fetch --tags</code> and <code>git checkout v1.1.109403</code> before running <code>make</code>.</p>
+      </section>
+
+      <section class="doc-section" id="verify">
+        <p class="section-kicker">03 — INSPECT</p>
+        <h2>Verify the ELF outputs</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>UBUNTU · VM GUEST</span><span>output checks</span></div>
+          <pre><code>file build/x86/kernel.elf build/x86_64/kernel.elf
+readelf -h build/x86/kernel.elf
+readelf -h build/x86_64/kernel.elf</code></pre>
+        </div>
+        <p>This checks the output format only. The beta has no ISO, bootloader, or boot protocol, so do not try to install or boot these files. Your Mac and VM remain running their existing operating systems.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="index.html">All build guides</a>
+        <a href="../index.html">Handbook</a>
+      </footer>
+    </main>
+  </body>
+</html>

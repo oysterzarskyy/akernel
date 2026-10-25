@@ -1,0 +1,85 @@
+/* Ultra-Minimal Linux Archive Style (Less) */
+
+// 1. Core Config
+@bg:     #000;
+@fg:     #bbb;
+@dim:    #666;
+@border: #333;
+@green:  rgb(128, 186, 128);
+@main-cmd: rgb(59, 166, 209);
+@sec-ddash-cmd: rgb(73, 73, 73);
+@stuff-idk-cmd: rgb(189, 178, 178);
+
+.box() { background: #111; border: 1px solid @border; padding: 1ch; margin: 1ch 0; }
+.line() { border-bottom: 1px solid @border; padding: 4px 0; }
+
+// 2. Global TTY Setup
+* { box-sizing: border-box; }
+body {
+  max-width: 80ch;
+  margin: 0 auto;
+  padding: 2ch;
+  background: @bg;
+  color: @fg;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+// 3. Simple Flat Layout
+.topbar, .doc-footer, .file-list div { display: flex; justify-content: space-between; .line(); }
+.topbar {
+  align-items: center;
+  gap: 1ch;
+  .topbar-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 1ch;
+    a { white-space: nowrap; }
+  }
+}
+.page-shell { display: grid; grid-template-columns: 16ch 1fr; gap: 4ch; margin: 2ch 0; }
+
+// 4. Sidebar Elements
+.sidebar {
+  &-heading { font-weight: bold; color: @dim; }
+  &-link { display: block; &.active { font-weight: bold; color: #fff; } }
+  &-note { margin-top: 2ch; padding-top: 1ch; border-top: 1px dashed @border; color: @dim; }
+}
+
+// 5. Plain Typography & Links
+h1, h2 { font-weight: bold; font-size: 1em; margin: 2ch 0 1ch; color: #fff; }
+h1 { text-transform: uppercase; border-bottom: 1px solid @border; }
+a { color: #fff; &:hover { background: @border; } }
+.breadcrumb, .doc-meta, .overline, .section-kicker, .lead { color: @dim; }
+
+// 6. Terminal Output Containers
+.callout, .note-line, pre { .box(); }
+code { background: #111; border: 1px solid @border; padding: 0 0.5ch; color: @green; }
+pre code { padding: 0; border: 0; background: transparent; color: inherit; }
+
+.code-block {
+  .box(); padding: 0;
+  .code-caption { padding: 2px 4px; background: @border; color: @dim; font-size: 11px; }
+  pre { margin: 0; border: 0; overflow-x: auto; color: @green; }
+}
+
+// 7. Plain-text Lists
+.file-list { border-top: 1px solid @border; margin: 1ch 0; div { border-bottom-style: dotted; color: @dim; } }
+.check-list, .steps { padding-left: 3ch; color: @dim; }
+.guide-list {
+  padding-left: 3ch;
+  margin: 1ch 0;
+  li { padding: 0.35ch 0; }
+}
+
+// 8. Element Hiding & Mobile Stacking
+.status-dot, .callout-mark, .contents, .steps li > span { display: none; }
+
+@media (max-width: 600px) {
+  .page-shell { grid-template-columns: 1fr; gap: 2ch; }
+  .sidebar { border-bottom: 1px dashed @border; padding-bottom: 2ch; }
+  .brand-section, .brand-divider { display: none; }
+  .topbar { align-items: flex-start; }
+}

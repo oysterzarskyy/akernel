@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Step-by-step Ubuntu and Debian instructions for building akernel.">
+    <title>Build on Ubuntu or Debian — akernel</title>
+    <link rel="stylesheet" href="../style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel documentation home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Ubuntu / Debian</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">All OS guides</a>
+        <a href="../../index.html">Forum</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <main class="document">
+      <div class="breadcrumb"><a href="index.html">Build steps</a><span>/</span>Ubuntu and Debian</div>
+      <header class="doc-heading">
+        <p class="overline">LINUX · APT</p>
+        <h1>Build on Ubuntu or Debian</h1>
+        <p class="lead">Install GNU build tools, clone the source, and produce both kernel ELF targets.</p>
+      </header>
+
+      <section class="callout">
+        <span class="callout-mark">!</span>
+        <p>This creates kernel ELF files only. It does not create an ISO or a bootable operating system. For beta testing, run these commands in a disposable Ubuntu VM; never write outputs to a disk.</p>
+      </section>
+
+      <section class="doc-section" id="tools">
+        <p class="section-kicker">01 — INSTALL TOOLS</p>
+        <h2>Install dependencies</h2>
+        <p>Open a terminal and install GNU Make, GCC multilib support, binutils, NASM, Git, and file inspection tools:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>Ubuntu / Debian</span></div>
+          <pre><code>sudo apt update
+sudo apt install -y build-essential gcc-multilib binutils nasm git file</code></pre>
+        </div>
+      </section>
+
+      <section class="doc-section" id="source">
+        <p class="section-kicker">02 — GET THE SOURCE</p>
+        <h2>Clone the repository</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>clone default branch</span></div>
+          <pre><code>git clone https://github.com/oysterzarskyy/akernel.git
+cd akernel</code></pre>
+        </div>
+        <p>There is currently no published version tag. This builds the repository's default branch. After <code>v1.1.109403</code> is published, you can select that exact source with:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>OPTIONAL</span><span>after the tag is published</span></div>
+          <pre><code>git fetch --tags
+git checkout v1.1.109403</code></pre>
+        </div>
+      </section>
+
+      <section class="doc-section" id="build">
+        <p class="section-kicker">03 — COMPILE</p>
+        <h2>Build both architectures</h2>
+        <p>From the repository root, build the 32-bit x86 and 64-bit x86-64 targets:</p>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
+          <pre><code>make</code></pre>
+        </div>
+        <p>To build a single target, run <code>make check-x86</code> or <code>make check-x86_64</code>.</p>
+      </section>
+
+      <section class="doc-section" id="verify">
+        <p class="section-kicker">04 — VERIFY OUTPUTS</p>
+        <h2>Inspect the ELF files</h2>
+        <div class="code-block">
+          <div class="code-caption"><span>TERMINAL</span><span>output checks</span></div>
+          <pre><code>file build/x86/kernel.elf build/x86_64/kernel.elf
+readelf -h build/x86/kernel.elf
+readelf -h build/x86_64/kernel.elf</code></pre>
+        </div>
+        <p>The build outputs are <code>build/x86/kernel.elf</code> and <code>build/x86_64/kernel.elf</code>. ELF format alone does not make them bootable. Do not use <code>qemu -kernel</code> or write them to a disk; this beta has no bootloader or boot protocol.</p>
+      </section>
+
+      <footer class="doc-footer">
+        <a href="index.html">All build guides</a>
+        <a href="../index.html">Handbook</a>
+      </footer>
+    </main>
+  </body>
+</html>
