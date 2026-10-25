@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Beta release downloads and ISO availability for akernel 1.1.109403.">
+    <title>Beta downloads — akernel</title>
+    <link rel="stylesheet" href="../docs/style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Beta downloads</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="../index.html">Forum</a>
+        <a href="../docs/">Documentation</a>
+        <a href="../loader/">Browser demo</a>
+        <a href="https://github.com/oysterzarskyy/akernel/releases">GitHub releases ↗</a>
+      </nav>
+    </header>
+
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="Download navigation">
+        <p class="sidebar-heading">BETA 1.1.109403</p>
+        <a class="sidebar-link active" href="#iso">ISO image</a>
+        <a class="sidebar-link" href="#build">Build locally</a>
+        <a class="sidebar-link" href="#safety">Safety notes</a>
+        <div class="sidebar-note">x86-64 · Limine<br>BIOS + UEFI</div>
+      </aside>
+
+      <main class="document">
+        <div class="breadcrumb"><a href="../">akernel</a><span>/</span>Beta downloads</div>
+        <header class="doc-heading">
+          <p class="overline">BETA RELEASE · 1.1.109403</p>
+          <h1>Downloads</h1>
+          <p class="lead">Availability and safe test instructions for the x86-64 Limine image.</p>
+        </header>
+
+        <section class="callout" aria-label="ISO availability">
+          <span class="callout-mark">!</span>
+          <p><strong>No verified ISO download is published yet.</strong> The beta ISO can be built from source, but this repository has no ISO file attached to the release. Avoid third-party mirrors or unverified files.</p>
+        </section>
+
+        <section class="doc-section" id="iso">
+          <p class="section-kicker">01 — BETA IMAGE</p>
+          <h2>akernel 1.1.109403 · x86-64 ISO</h2>
+          <div class="file-list">
+            <div><code>akernel-1.1.109403-x86_64.iso</code><span>Not published · BIOS and UEFI · Limine 12.9.4</span></div>
+            <div><code>SHA-256</code><span>Not available until a verified image is published.</span></div>
+          </div>
+          <p><a href="https://github.com/oysterzarskyy/akernel/releases">Check the official GitHub releases page for a published image ↗</a></p>
+          <p>Need to inspect the interface first? Open the <a href="../loader/">browser loader demo</a>. It simulates the startup display; it is not a replacement for booting the ISO.</p>
+        </section>
+
+        <section class="doc-section" id="build">
+          <p class="section-kicker">02 — BUILD FROM SOURCE</p>
+          <h2>Create the beta ISO locally</h2>
+          <p>On a Linux environment with the required compiler, NASM, GNU Make, curl, and xorriso installed, clone the project and build the ISO:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>TERMINAL</span><span>Linux or WSL 2</span></div>
+            <pre><code>git clone https://github.com/oysterzarskyy/akernel.git
+cd akernel
+make iso</code></pre>
+          </div>
+          <p>The generated file is <code>build/akernel-1.1.109403-x86_64.iso</code>. The Makefile verifies the pinned Limine binary archive checksum before packaging it. See the <a href="../docs/steps/">host-specific build guides</a> for prerequisites.</p>
+        </section>
+
+        <section class="doc-section" id="safety">
+          <p class="section-kicker">03 — TEST SAFELY</p>
+          <h2>Use a disposable virtual machine</h2>
+          <ul class="check-list">
+            <li>This beta is a kernel scaffold, not an operating system or installer.</li>
+            <li>Boot the ISO only in a disposable virtual machine with no physical disk passthrough.</li>
+            <li>Do not write the image to a USB drive or install it over an existing system.</li>
+            <li>Verify any future published checksum before using an ISO.</li>
+          </ul>
+        </section>
+
+        <footer class="doc-footer">
+          <span>akernel · Beta 1.1.109403</span>
+          <a href="../docs/">Build and safety documentation</a>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

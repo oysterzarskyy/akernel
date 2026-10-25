@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Try the simulated akernel beta boot display in your browser.">
+    <title>Browser loader demo — akernel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="loader.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Browser loader demo</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="../index.html">Forum</a>
+        <a href="../downloads/">Beta ISO</a>
+        <a href="../docs/">Documentation</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <p class="eyebrow">BETA 1.1.109403 · EXPERIMENTAL</p>
+      <h1>Browser loader demo</h1>
+      <p class="lead">A small JavaScript and HTML preview of the akernel startup flow and text display.</p>
+
+      <aside class="notice" role="note">
+        <strong>Simulation only.</strong> Browsers cannot boot this native kernel or execute the ISO. This demo animates representative startup messages; it is not an emulator, a real bootloader, or a substitute for testing in a virtual machine.
+      </aside>
+
+      <section class="panel" aria-labelledby="image-title">
+        <h2 id="image-title">Optional ISO check</h2>
+        <p>Choose an ISO to check for the ISO 9660 primary-volume signature. The file is read locally in your browser and is not uploaded.</p>
+        <div class="file-picker">
+          <label for="iso-file">Select beta ISO</label>
+          <input id="iso-file" type="file" accept=".iso,application/x-iso9660-image">
+        </div>
+        <p class="status" id="iso-status" role="status" aria-live="polite">No image selected.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="demo-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="demo-title">Simulated boot console</h2>
+            <p>Run or replay the browser-only startup animation.</p>
+          </div>
+          <button class="run-button" id="run-demo" type="button">Start demo</button>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <span id="progress-bar"></span>
+        </div>
+        <pre class="console" id="console" aria-label="Simulated kernel console" aria-live="polite">akernel browser preview
+This is not a real kernel boot.
+Ready when you are.</pre>
+        <p class="status" id="demo-status" role="status" aria-live="polite">Demo ready.</p>
+      </section>
+
+      <footer class="footer">
+        <a href="../downloads/">Beta image availability and build instructions</a>
+        <span>Test real images only in a disposable VM.</span>
+      </footer>
+    </main>
+  </body>
+</html>

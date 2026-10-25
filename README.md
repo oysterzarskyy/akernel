@@ -65,7 +65,8 @@ environment with `curl`, `sha256sum`, `tar`, and `xorriso`.
 
 The community forum and handbook are in [`web/`](web/). LESS sources are
 compiled into browser-ready CSS with `npm ci` and `npm run build` from `web/`.
-GitHub Pages runs this build before deployment. The forum uses the cookie-backed
+The static site can be deployed to Cloudflare Pages with `web/` as the build
+root and `npm run build` as the build command. The forum uses the cookie-backed
 JSON API in [`api/server.py`](api/server.py) for anonymous sessions, discussions,
 and replies. Run the API and local site together with Python 3:
 
@@ -74,17 +75,13 @@ python api/server.py
 ```
 
 Set `AKERNEL_API_PORT` or `AKERNEL_DATABASE` to change the API port or SQLite
-database path. GitHub Pages serves only the static site, so the API must be
+database path. Cloudflare Pages serves only the static site, so the API must be
 hosted separately or placed behind a same-origin reverse proxy. Set
 `AKERNEL_ALLOWED_ORIGIN` to the exact site origin. For a cross-site HTTPS API,
 also set `AKERNEL_COOKIE_SAMESITE=None` and `AKERNEL_COOKIE_SECURE=1`. The
 browser keeps its anonymous identity in a persistent HttpOnly cookie; clearing
 cookies loses access to that guest identity. See the [forum API guide](web/docs/#forum-api)
 for deployment details.
-
-GitHub Pages deployment is configured in
-`.github/workflows/pages.yml`; enable **Settings → Pages → Build and deployment
-→ GitHub Actions** in the repository to publish the static site.
 
 ## Beta release 1.1.109403
 
@@ -94,6 +91,9 @@ x86-64 Limine ISO locally, but no ISO is attached to or published with this
 source release. Test it only in a disposable VM; do not replace a Linux
 installation or write the ISO to a physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
+The website's [beta downloads page](web/downloads/) explains the current ISO
+availability, and the [browser loader demo](web/loader/) provides a simulated
+preview that does not execute the kernel.
 
 The `pkg/akernel/` tree contains package metadata, a text system-information
 renderer (`fetch`, output through a caller-provided writer), and a system

@@ -18,6 +18,8 @@
       </a>
       <nav class="topbar-links" aria-label="Project links">
         <a href="../index.html">Forum</a>
+        <a href="../downloads/">Beta ISO</a>
+        <a href="../loader/">Browser demo</a>
         <a href="https://github.com/oysterzarskyy/akernel/releases">Releases ↗</a>
         <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
       </nav>
@@ -29,6 +31,8 @@
         <a class="sidebar-link active" href="#overview">Overview</a>
         <a class="sidebar-link" href="#requirements">Requirements</a>
         <a class="sidebar-link" href="steps/">Build guides by OS</a>
+        <a class="sidebar-link" href="../downloads/">Beta ISO downloads</a>
+        <a class="sidebar-link" href="../loader/">Browser loader demo</a>
         <a class="sidebar-link" href="#layout">Project layout</a>
         <a class="sidebar-link" href="#packages">Packages</a>
         <a class="sidebar-link" href="#contributing">Contributing</a>
@@ -91,9 +95,10 @@
             <div><code>kernel/arch/x86/</code><span>32-bit entry assembly and linker script.</span></div>
             <div><code>kernel/arch/x86_64/</code><span>Legacy 64-bit and Limine linker scripts and entry assembly.</span></div>
             <div><code>third_party/limine-protocol/</code><span>Pinned Limine protocol header and its 0BSD license.</span></div>
-            <div><code>third_party/limine-protocol/</code><span>Pinned Limine protocol header and its 0BSD license.</span></div>
             <div><code>pkg/akernel/</code><span>Package descriptors, the fetch system-info renderer, and sys interface stub.</span></div>
             <div><code>releases/</code><span>Versioned release notes and artifact availability manifests.</span></div>
+            <div><code>web/downloads/</code><span>Beta ISO availability, verified release links, and local build instructions.</span></div>
+            <div><code>web/loader/</code><span>Browser-only boot-flow simulation and ISO9660 image check.</span></div>
             <div><code>web/docs/steps/</code><span>Standalone build instructions for Linux, Windows, and macOS hosts.</span></div>
             <div><code>Makefile</code><span>Legacy ELF targets plus the opt-in Limine ISO and QEMU targets.</span></div>
             <div><code>web/</code><span>Project landing page, documentation, and visual identity.</span></div>
@@ -137,20 +142,21 @@ git push -u origin my-change</code></pre>
           <p class="section-kicker">09 — PUBLISH</p>
           <h2>Beta release 1.1.109403</h2>
           <p>The versioned release record is in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.1.109403">the releases folder ↗</a>. The repository does not yet have a published version tag or GitHub Release. The source can build an x86-64 Limine ISO locally with <code>make iso</code>, but no ISO is attached to this source release. The manifest lists it as buildable, not published.</p>
+          <p>See the <a href="../downloads/">beta ISO downloads page</a> for current availability and local build instructions, or try the <a href="../loader/">browser loader demo</a> for a simulated preview.</p>
           <p>When publishing source, tag the version and create a GitHub Release. Clearly label the ISO as a VM-test image, not a complete installable operating system.</p>
           <div class="code-block">
             <div class="code-caption"><span>GIT</span><span>beta 1.1.109403</span></div>
             <pre><code>git tag v1.1.109403
 git push origin v1.1.109403</code></pre>
           </div>
-          <p>GitHub Pages can publish the forum and this handbook. Enable <strong>Settings → Pages → Build and deployment → GitHub Actions</strong> in the repository.</p>
+          <p>Cloudflare Pages can publish the static forum and handbook from the <code>web/</code> directory. The forum API must be hosted separately; see the API setup notes below.</p>
         </section>
 
         <section class="doc-section" id="forum-api">
           <p class="section-kicker">10 — COMMUNITY</p>
           <h2>Forum API and anonymous accounts</h2>
           <p>The forum front end is connected to the JSON API in <code>api/server.py</code>. The API assigns a persistent anonymous guest identity using a long-lived <code>HttpOnly</code> cookie. The cookie is not readable by page scripts; the browser sends it automatically with requests. Clearing browser cookies loses access to that anonymous identity, so this is not a recoverable registered account.</p>
-          <p>GitHub Pages cannot run the API process. Host the API separately or put it behind a same-origin reverse proxy, then set the <code>akernel-api-base</code> meta value in <code>web/index.html</code> to the API prefix (for example, <code>https://api.example.com/api</code>).</p>
+          <p>Cloudflare Pages serves static files and cannot run the Python API process. Host the API separately or put it behind a same-origin reverse proxy, then set the <code>akernel-api-base</code> meta value in <code>web/index.html</code> to the API prefix (for example, <code>https://api.example.com/api</code>).</p>
           <div class="code-block">
             <div class="code-caption"><span>LOCAL API</span><span>Python 3, no external packages</span></div>
             <pre><code>python api/server.py
