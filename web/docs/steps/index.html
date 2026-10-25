@@ -26,14 +26,14 @@
     <main class="document">
       <div class="breadcrumb"><a href="../index.html">Documentation</a><span>/</span>Build steps</div>
       <header class="doc-heading" id="overview">
-        <p class="overline">BETA 1.1.109403 · HOST OS GUIDES</p>
+        <p class="overline">NIGHTLY 1.2.0NR · HOST OS GUIDES</p>
         <h1>Build akernel on your OS</h1>
         <p class="lead">Select a guide to install the build tools, compile the kernel targets, and optionally create a Limine ISO for VM testing.</p>
       </header>
 
       <section class="callout" aria-label="Important project status">
         <span class="callout-mark">!</span>
-        <p><strong>VM testing only.</strong> The opt-in <code>make iso</code> target assembles a Limine x86-64 ISO for virtual machines. It is not an installer or a complete operating system. Do not write it to a physical disk or replace your host operating system.</p>
+        <p><strong>VM testing only.</strong> The opt-in <code>make CC=gcc iso-zip</code> target assembles a Limine x86-64 ISO and ZIP for virtual machines. It is not an installer or a complete operating system. Do not write it to a physical disk or replace your host operating system.</p>
       </section>
 
       <section class="doc-section" id="linux">
@@ -59,11 +59,11 @@
         <p>These instructions run the build tools in a Linux environment. Native Windows PE or macOS Mach-O compilers do not produce the ELF targets expected by this project.</p>
       </section>
 
-      <section class="doc-section" id="beta">
-        <p class="section-kicker">RECOMMENDED BETA TEST</p>
+      <section class="doc-section" id="nightly">
+        <p class="section-kicker">RECOMMENDED NIGHTLY TEST</p>
         <h2>Use an isolated virtual machine</h2>
-        <p>For beta testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
-        <p>On Linux, install <code>curl</code> and <code>xorriso</code> in addition to the standard build tools, then run <code>make iso</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; other hypervisors can boot the ISO as virtual CD media.</p>
+        <p>For nightly testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
+        <p>On Linux, install <code>curl</code>, <code>xorriso</code>, and <code>zip</code> in addition to the standard build tools, then run <code>make CC=gcc iso-zip</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; other hypervisors can boot the ISO as virtual CD media.</p>
       </section>
 
       <footer class="doc-footer">

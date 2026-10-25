@@ -41,7 +41,7 @@
         <h2>Install dependencies</h2>
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>Fedora</span></div>
-          <pre><code>sudo dnf install -y gcc make binutils nasm git file curl xorriso</code></pre>
+          <pre><code>sudo dnf install -y gcc make binutils nasm git file curl xorriso zip unzip</code></pre>
         </div>
         <p>The build is freestanding and does not link against the guest's C library. GCC must accept the <code>-m32</code> and <code>-m64</code> options; GNU binutils must provide the i386 and x86-64 ELF link modes.</p>
       </section>
@@ -54,7 +54,7 @@
           <pre><code>git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel</code></pre>
         </div>
-        <p>To test version 1.1.109403 after its tag is published, run <code>git fetch --tags</code> followed by <code>git checkout v1.1.109403</code>.</p>
+        <p>The current 1.2.0nr nightly is built from the repository's default branch and does not use a release tag.</p>
       </section>
 
       <section class="doc-section" id="build">
@@ -67,7 +67,7 @@ file build/x86/kernel.elf build/x86_64/kernel.elf
 readelf -h build/x86/kernel.elf
 readelf -h build/x86_64/kernel.elf</code></pre>
         </div>
-        <p>To create the pinned Limine v12.9.4 BIOS/UEFI image, run <code>make iso</code>. To test it in QEMU, also install <code>qemu-system-x86</code> and run <code>make run-qemu</code>. The legacy ELF outputs are not bootable by themselves.</p>
+        <p>To create the pinned Limine v12.9.4 BIOS/UEFI ISO and ZIP with GCC, run <code>make CC=gcc iso-zip</code>. To test it in QEMU, also install <code>qemu-system-x86</code> and run <code>make run-qemu</code>. The legacy ELF outputs are not bootable by themselves.</p>
       </section>
 
       <footer class="doc-footer">

@@ -3,7 +3,7 @@
 
 #include "akernel/console/framebuffer.h"
 
-static const uint8_t font[36][7] = {
+static const uint8_t font[62][7] = {
     {14, 17, 17, 31, 17, 17, 17}, {30, 17, 17, 30, 17, 17, 30},
     {14, 17, 16, 16, 16, 17, 14}, {30, 17, 17, 17, 17, 17, 30},
     {31, 16, 16, 30, 16, 16, 31}, {31, 16, 16, 30, 16, 16, 16},
@@ -21,7 +21,20 @@ static const uint8_t font[36][7] = {
     {14, 17, 1, 2, 4, 8, 31}, {30, 1, 1, 14, 1, 1, 30},
     {2, 6, 10, 18, 31, 2, 2}, {31, 16, 16, 30, 1, 1, 30},
     {14, 16, 16, 30, 17, 17, 14}, {31, 1, 2, 4, 8, 8, 8},
-    {14, 17, 17, 14, 17, 17, 14}, {14, 17, 17, 15, 1, 1, 14}
+    {14, 17, 17, 14, 17, 17, 14}, {14, 17, 17, 15, 1, 1, 14},
+    {0, 0, 14, 1, 15, 17, 15}, {16, 16, 30, 17, 17, 17, 30},
+    {0, 0, 14, 16, 16, 17, 14}, {1, 1, 15, 17, 17, 17, 15},
+    {0, 0, 14, 17, 31, 16, 14}, {6, 8, 8, 30, 8, 8, 8},
+    {0, 15, 17, 17, 15, 1, 14}, {16, 16, 30, 17, 17, 17, 17},
+    {4, 0, 12, 4, 4, 4, 14}, {2, 0, 6, 2, 2, 18, 12},
+    {16, 16, 18, 20, 24, 20, 18}, {12, 4, 4, 4, 4, 4, 14},
+    {0, 0, 26, 21, 21, 21, 21}, {0, 0, 30, 17, 17, 17, 17},
+    {0, 0, 14, 17, 17, 17, 14}, {0, 30, 17, 17, 30, 16, 16},
+    {0, 15, 17, 17, 15, 1, 1}, {0, 0, 22, 25, 16, 16, 16},
+    {0, 0, 15, 16, 14, 1, 30}, {8, 8, 30, 8, 8, 9, 6},
+    {0, 0, 17, 17, 17, 19, 13}, {0, 0, 17, 17, 17, 10, 4},
+    {0, 0, 17, 17, 21, 21, 10}, {0, 0, 17, 10, 4, 10, 17},
+    {0, 17, 17, 17, 15, 1, 14}, {0, 0, 31, 2, 4, 8, 31}
 };
 
 static uint32_t framebuffer_channel(uint8_t value,
@@ -112,32 +125,74 @@ static void framebuffer_draw_pixel(
 static const uint8_t *glyph_rows(char character)
 {
     static const uint8_t blank[7] = {0, 0, 0, 0, 0, 0, 0};
+    static const uint8_t exclamation[7] = {4, 4, 4, 4, 4, 0, 4};
+    static const uint8_t question[7] = {14, 17, 1, 2, 4, 0, 4};
+    static const uint8_t apostrophe[7] = {4, 4, 8, 0, 0, 0, 0};
+    static const uint8_t quotation[7] = {10, 10, 0, 0, 0, 0, 0};
+    static const uint8_t comma[7] = {0, 0, 0, 0, 4, 4, 8};
     static const uint8_t period[7] = {0, 0, 0, 0, 0, 12, 12};
     static const uint8_t colon[7] = {0, 12, 12, 0, 12, 12, 0};
+    static const uint8_t semicolon[7] = {0, 4, 4, 0, 4, 4, 8};
     static const uint8_t hyphen[7] = {0, 0, 0, 31, 0, 0, 0};
     static const uint8_t plus[7] = {0, 4, 4, 31, 4, 4, 0};
     static const uint8_t hash[7] = {10, 31, 10, 10, 31, 10, 0};
     static const uint8_t slash[7] = {1, 2, 2, 4, 8, 8, 16};
+    static const uint8_t backslash[7] = {16, 8, 8, 4, 2, 2, 1};
+    static const uint8_t left_parenthesis[7] = {2, 4, 8, 8, 8, 4, 2};
+    static const uint8_t right_parenthesis[7] = {8, 4, 2, 2, 2, 4, 8};
+    static const uint8_t less_than[7] = {2, 4, 8, 16, 8, 4, 2};
+    static const uint8_t greater_than[7] = {8, 4, 2, 1, 2, 4, 8};
+    static const uint8_t equals[7] = {0, 31, 0, 31, 0, 0, 0};
+    static const uint8_t left_bracket[7] = {14, 8, 8, 8, 8, 8, 14};
+    static const uint8_t right_bracket[7] = {14, 2, 2, 2, 2, 2, 14};
+    static const uint8_t caret[7] = {4, 10, 17, 0, 0, 0, 0};
     static const uint8_t underscore[7] = {0, 0, 0, 0, 0, 0, 31};
+    static const uint8_t pipe[7] = {4, 4, 4, 4, 4, 4, 4};
+    static const uint8_t asterisk[7] = {0, 21, 14, 31, 14, 21, 0};
+    static const uint8_t dollar[7] = {4, 15, 20, 14, 5, 30, 4};
+    static const uint8_t percent[7] = {24, 25, 2, 4, 8, 19, 3};
+    static const uint8_t ampersand[7] = {12, 18, 20, 8, 21, 18, 13};
+    static const uint8_t tilde[7] = {0, 0, 9, 22, 0, 0, 0};
 
-    if (character >= 'a' && character <= 'z') {
-        character = (char)(character - 'a' + 'A');
-    }
     if (character >= 'A' && character <= 'Z') {
         return font[(unsigned int)(character - 'A')];
     }
     if (character >= '0' && character <= '9') {
         return font[26u + (unsigned int)(character - '0')];
     }
+    if (character >= 'a' && character <= 'z') {
+        return font[36u + (unsigned int)(character - 'a')];
+    }
 
     switch (character) {
+    case '!': return exclamation;
+    case '?': return question;
+    case '\'': return apostrophe;
+    case '"': return quotation;
+    case ',': return comma;
     case '.': return period;
     case ':': return colon;
+    case ';': return semicolon;
     case '-': return hyphen;
     case '+': return plus;
     case '#': return hash;
     case '/': return slash;
+    case '\\': return backslash;
+    case '(': return left_parenthesis;
+    case ')': return right_parenthesis;
+    case '<': return less_than;
+    case '>': return greater_than;
+    case '=': return equals;
+    case '[': return left_bracket;
+    case ']': return right_bracket;
+    case '^': return caret;
     case '_': return underscore;
+    case '|': return pipe;
+    case '*': return asterisk;
+    case '$': return dollar;
+    case '%': return percent;
+    case '&': return ampersand;
+    case '~': return tilde;
     default: return blank;
     }
 }

@@ -12,9 +12,9 @@
 #define AKERNEL_VERSION_H
 
 #define AKERNEL_VERSION_MAJOR 1U
-#define AKERNEL_VERSION_MINOR 1U
-#define AKERNEL_VERSION_PATCH 109403U
-#define AKERNEL_VERSION_STRING "1.1.109403" // spanning seashells beta
-#define AKERNEL_VERSION "1.1.109403" // spanning seashells beta
+#define AKERNEL_VERSION_MINOR 2U
+#define AKERNEL_VERSION_PATCH 0U
+#define AKERNEL_VERSION_STRING "1.2.0nr"
+#define AKERNEL_VERSION "1.2.0nr"
 
 #endif

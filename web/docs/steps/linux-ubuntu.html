@@ -43,7 +43,7 @@
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>Ubuntu / Debian</span></div>
           <pre><code>sudo apt update
-sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso qemu-system-x86</code></pre>
+sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso zip unzip qemu-system-x86</code></pre>
         </div>
       </section>
 
@@ -55,11 +55,11 @@ sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xor
           <pre><code>git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel</code></pre>
         </div>
-        <p>There is currently no published version tag. This builds the repository's default branch. After <code>v1.1.109403</code> is published, you can select that exact source with:</p>
+        <p>The nightly is an untagged source snapshot. This builds the repository's default branch.</p>
         <div class="code-block">
-          <div class="code-caption"><span>OPTIONAL</span><span>after the tag is published</span></div>
-          <pre><code>git fetch --tags
-git checkout v1.1.109403</code></pre>
+          <div class="code-caption"><span>COMPILER</span><span>GCC</span></div>
+          <pre><code>gcc --version
+make CC=gcc</code></pre>
         </div>
       </section>
 
@@ -80,10 +80,11 @@ git checkout v1.1.109403</code></pre>
         <p>The opt-in target downloads the pinned Limine v12.9.4 binary package, verifies its SHA-256, and creates an x86-64 BIOS/UEFI ISO in <code>build/</code>:</p>
         <div class="code-block">
           <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
-          <pre><code>make iso
+          <pre><code>make CC=gcc iso-zip
 make run-qemu</code></pre>
         </div>
-        <p>Alternatively, attach <code>build/akernel-1.1.109403-x86_64.iso</code> as virtual CD media in a disposable VM. Do not attach a physical disk.</p>
+        <p>Alternatively, attach <code>build/akernel-v1.2.0nr-x86_64.iso</code> as virtual CD media in a disposable VM. Do not attach a physical disk.</p>
+        <p>The compressed ISO and checksum are <code>build/akernel-v1.2.0nr-x86_64.zip</code> and <code>build/akernel-v1.2.0nr-x86_64.zip.sha256</code>.</p>
       </section>
 
       <section class="doc-section" id="verify">
@@ -94,7 +95,7 @@ make run-qemu</code></pre>
           <pre><code>file build/x86/kernel.elf build/x86_64/kernel.elf
 readelf -h build/x86/kernel.elf
 readelf -h build/x86_64/kernel.elf
-file build/akernel-1.1.109403-x86_64.iso</code></pre>
+file build/akernel-v1.2.0nr-x86_64.iso</code></pre>
         </div>
         <p>The legacy ELF outputs are not bootable on their own. Only the x86-64 Limine ISO target is intended for VM boot testing.</p>
       </section>

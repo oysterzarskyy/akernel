@@ -1,6 +1,7 @@
-CC ?= gcc
+CC = gcc
 LD ?= ld
 NASM ?= nasm
+ZIP ?= zip
 CC_X86 ?= $(CC)
 LD_X86 ?= $(LD)
 CC_X86_64 ?= $(CC)
@@ -10,6 +11,8 @@ LIMINE_SHA256 := 847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b
 LIMINE_ARCHIVE := build/limine-binary-$(LIMINE_VERSION).tar.gz
 LIMINE_DIR := build/limine-binary
 LIMINE_URL := https://github.com/Limine-Bootloader/limine/releases/download/v$(LIMINE_VERSION)/limine-binary.tar.gz
+ISO_IMAGE := build/akernel-v1.2.0nr-x86_64.iso
+ISO_ZIP := build/akernel-v1.2.0nr-x86_64.zip
 
 CFLAGS := -std=c11 -ffreestanding -fno-pie -fno-stack-protector \
           -Wall -Wextra -Werror -O2 -Ikernel/include
@@ -18,7 +21,7 @@ LIMINE_CFLAGS := $(CFLAGS) -m64 -mcmodel=kernel -mno-red-zone \
                  -DAKPACKAGE_BOOT_PROTOCOL='"Limine"'
 
 .DELETE_ON_ERROR:
-.PHONY: all check-x86 check-x86_64 iso run-qemu clean
+.PHONY: all check-x86 check-x86_64 iso iso-zip run-qemu clean
 
 all: check-x86 check-x86_64
 
@@ -26,10 +29,12 @@ check-x86: build/x86/kernel.elf
 
 check-x86_64: build/x86_64/kernel.elf
 
-iso: build/akernel-1.1.109403-x86_64.iso
+iso: $(ISO_IMAGE)
+
+iso-zip: $(ISO_ZIP).sha256
 
 run-qemu: iso
-	qemu-system-x86_64 -m 2G -cdrom build/akernel-1.1.109403-x86_64.iso
+	qemu-system-x86_64 -m 2G -cdrom $(ISO_IMAGE)
 
 build/x86/main.o: kernel/src/legacy/main.c \
                   kernel/include/akernel/kernel.h \
@@ -134,7 +139,7 @@ $(LIMINE_DIR)/.ready: $(LIMINE_ARCHIVE)
 $(LIMINE_DIR)/limine: $(LIMINE_DIR)/.ready
 	$(MAKE) -C $(LIMINE_DIR)
 
-build/akernel-1.1.109403-x86_64.iso: build/x86_64/akernel-limine.elf $(LIMINE_DIR)/limine limine.conf
+$(ISO_IMAGE): build/x86_64/akernel-limine.elf $(LIMINE_DIR)/limine limine.conf
 	rm -rf build/iso-root
 	mkdir -p build/iso-root/boot build/iso-root/EFI/BOOT
 	mkdir -p build/iso-root/boot/limine
@@ -152,6 +157,13 @@ build/akernel-1.1.109403-x86_64.iso: build/x86_64/akernel-limine.elf $(LIMINE_DI
 		--efi-boot-image --protective-msdos-label \
 		build/iso-root -o $@
 	$(LIMINE_DIR)/limine bios-install $@
+
+$(ISO_ZIP): $(ISO_IMAGE)
+	rm -f $@
+	$(ZIP) -j -9 $@ $<
+
+$(ISO_ZIP).sha256: $(ISO_ZIP)
+	sha256sum $< > $@
 
 clean:
 	rm -rf build

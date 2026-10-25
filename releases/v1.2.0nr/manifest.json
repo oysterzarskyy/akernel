@@ -1,0 +1,48 @@
+{
+  "project": "akernel",
+  "version": "1.2.0nr",
+  "channel": "nightly",
+  "release_tag": null,
+  "kernel_outputs": [
+    {
+      "architecture": "x86",
+      "format": "ELF",
+      "build_path": "build/x86/kernel.elf",
+      "bootable": false
+    },
+    {
+      "architecture": "x86_64",
+      "format": "ELF",
+      "build_path": "build/x86_64/kernel.elf",
+      "bootable": false
+    }
+  ],
+  "iso": {
+    "filename": "akernel-v1.2.0nr-x86_64.iso",
+    "build_path": "build/akernel-v1.2.0nr-x86_64.iso",
+    "status": "buildable_not_published",
+    "archive_filename": "akernel-v1.2.0nr-x86_64.zip",
+    "archive_build_path": "build/akernel-v1.2.0nr-x86_64.zip",
+    "archive_checksum_path": "build/akernel-v1.2.0nr-x86_64.zip.sha256",
+    "compiler": "GCC",
+    "boot_protocol": "Limine",
+    "architectures": [
+      "x86_64"
+    ],
+    "firmware": [
+      "BIOS",
+      "UEFI"
+    ],
+    "limine_version": "12.9.4",
+    "limine_binary_sha256": "847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b1",
+    "limine_binary_license": "BSD-2-Clause",
+    "build_command": "make CC=gcc iso-zip",
+    "test_command": "make run-qemu",
+    "included_in_source_release": false
+  },
+  "packages": {
+    "status": "metadata_and_stubs_only",
+    "installable": false
+  },
+  "recommended_test": "Build and boot the ISO as virtual media in a disposable VM."
+}

@@ -43,7 +43,7 @@ static const char *const akpkg_fetch_info[] = {
     "Version: " AKPACKAGE_VERSION_STRING,
     "Architecture: " AKPACKAGE_TARGET_ARCH_NAME,
     "Build: freestanding ELF",
-    "Status: beta scaffold",
+    "Status: nightly scaffold",
     "Packages: metadata and stubs",
     "Boot: " AKPACKAGE_BOOT_PROTOCOL
 };

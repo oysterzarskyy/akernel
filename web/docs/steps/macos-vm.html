@@ -42,7 +42,7 @@
         <ol class="steps">
           <li><span>01</span><p>Install a desktop hypervisor that supports an x86-64 Ubuntu guest (for example, UTM with x86-64 emulation on Apple Silicon, or an x86-64 virtualization option on Intel Macs).</p></li>
           <li><span>02</span><p>Create a fresh Ubuntu 24.04 LTS x86-64 VM with a 20 GB or larger virtual disk, 2 CPU cores, and at least 2 GB RAM. Do not attach a physical Mac disk.</p></li>
-          <li><span>03</span><p>Install Ubuntu in the virtual disk, boot into the guest, and take a VM snapshot before beta testing.</p></li>
+          <li><span>03</span><p>Install Ubuntu in the virtual disk, boot into the guest, and take a VM snapshot before nightly testing.</p></li>
         </ol>
       </section>
 
@@ -53,14 +53,14 @@
         <div class="code-block">
           <div class="code-caption"><span>UBUNTU · VM GUEST</span><span>build both architectures</span></div>
           <pre><code>sudo apt update
-sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso qemu-system-x86
+sudo apt install -y build-essential gcc-multilib binutils nasm git file curl xorriso zip unzip qemu-system-x86
 git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel
 make
-make iso
+make CC=gcc iso-zip
 make run-qemu</code></pre>
         </div>
-        <p>The current repository has no published version tag. When <code>v1.1.109403</code> is published, use <code>git fetch --tags</code> and <code>git checkout v1.1.109403</code> before running <code>make</code>.</p>
+        <p>The current 1.2.0nr nightly is an untagged source snapshot from the repository's default branch.</p>
       </section>
 
       <section class="doc-section" id="verify">

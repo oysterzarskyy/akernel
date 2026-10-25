@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="Build, verify, and package akernel ISO images and experimental kernel package metadata.">
+    <title>How to package your akernels — akernel</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">Package guide</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">Handbook</a>
+        <a href="os-manual.html">OS manual</a>
+        <a href="../downloads/">Nightly downloads</a>
+        <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
+      </nav>
+    </header>
+
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="Package guide navigation">
+        <p class="sidebar-heading">PACKAGE GUIDE</p>
+        <a class="sidebar-link active" href="#iso">Package an ISO</a>
+        <a class="sidebar-link" href="#metadata">Package metadata</a>
+        <a class="sidebar-link" href="#publish">Verify and share</a>
+        <div class="sidebar-note">Nightly 1.2.0nr<br>Experimental format</div>
+      </aside>
+
+      <main class="document">
+        <div class="breadcrumb"><a href="index.html">Handbook</a><span>/</span>Package guide</div>
+        <header class="doc-heading">
+          <p class="overline">PACKAGING · NIGHTLY 1.2.0NR</p>
+          <h1>How to package your akernels</h1>
+          <p class="lead">Build a bootable test image, verify it, and organize experimental package metadata without implying that akernel has an installer.</p>
+        </header>
+
+        <section class="callout" aria-label="Package system status">
+          <span class="callout-mark">!</span>
+          <p><strong>Know what the tools support.</strong> The ISO ZIP workflow below is implemented. The package descriptors are C metadata and compatibility checks only: akernel does not yet install packages, resolve dependencies, or read package archives.</p>
+        </section>
+
+        <section class="doc-section" id="iso">
+          <p class="section-kicker">01 — PACKAGE A BOOT IMAGE</p>
+          <h2>Build the ISO and ZIP</h2>
+          <p>On Ubuntu or Debian, install the compiler, boot-image, archive, and validation tools:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>TERMINAL</span><span>Ubuntu / Debian</span></div>
+            <pre><code>sudo apt update
+sudo apt install -y build-essential gcc-multilib binutils nasm curl xorriso zip unzip qemu-system-x86</code></pre>
+          </div>
+          <p>From the repository root, build the image and a ZIP containing just that ISO:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
+            <pre><code>make clean
+make CC=gcc iso-zip
+unzip -t build/akernel-v1.2.0nr-x86_64.zip
+sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256
+file build/akernel-v1.2.0nr-x86_64.iso</code></pre>
+          </div>
+          <p>The outputs are <code>build/akernel-v1.2.0nr-x86_64.iso</code>, <code>build/akernel-v1.2.0nr-x86_64.zip</code>, and its <code>.sha256</code> file. Boot the ISO only as virtual CD media in a disposable VM. The image is not an installer.</p>
+        </section>
+
+        <section class="doc-section" id="metadata">
+          <p class="section-kicker">02 — DESCRIBE A FUTURE PACKAGE</p>
+          <h2>Start with the C descriptor</h2>
+          <p>Package sources can define the metadata structure in <code>pkg/akernel/package.h</code>. For example:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>C</span><span>experimental metadata</span></div>
+            <pre><code>#include "package.h"
+
+static const akpkg_descriptor example_package = {
+    .name = "example",
+    .package_version = {1u, 0u, 0u},
+    .version_string = "1.0.0",
+    .summary = "Example freestanding component",
+    .minimum_kernel_version = {1u, 2u, 0u},
+    .supported_architectures = AKPACKAGE_ARCH_X86_64,
+    .flags = AKPKG_FLAG_FREESTANDING_ONLY
+};</code></pre>
+          </div>
+          <p>The metadata can be checked with <code>akpkg_is_compatible</code> when compiled for a target. It does not make a package loadable. There is no stable package ABI or archive schema yet.</p>
+          <p>For your own experiments, keep source, build instructions, license, and a manifest together. One possible layout is:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>DIRECTORY</span><span>example experimental layout</span></div>
+            <pre><code>example-1.0.0-x86_64/
+  manifest.json
+  LICENSE
+  README.md
+  src/
+    example.c
+  build/
+    example.o</code></pre>
+          </div>
+          <p>Choose and document your own fields; the kernel currently does not parse this JSON example:</p>
+          <div class="code-block">
+            <div class="code-caption"><span>JSON</span><span>informational example only</span></div>
+            <pre><code>{
+  "name": "example",
+  "version": "1.0.0",
+  "target": "x86_64-elf",
+  "minimum_kernel": "1.2.0nr",
+  "entry_point": null,
+  "status": "source-example-not-installable"
+}</code></pre>
+          </div>
+        </section>
+
+        <section class="doc-section" id="publish">
+          <p class="section-kicker">03 — TEST AND SHARE</p>
+          <h2>Verify before distributing</h2>
+          <ul class="check-list">
+            <li>Build from a clean checkout and keep the compiler/tool versions with your notes.</li>
+            <li>Check the ZIP and checksum, then test the ISO in a disposable VM without physical-disk passthrough.</li>
+            <li>Include the source revision, target architecture, build commands, and license for every component.</li>
+            <li>Label experimental package data as non-installable until a package manager and format exist.</li>
+            <li>Publish checksums alongside downloads; use a trusted signing process if users need authenticity verification.</li>
+          </ul>
+          <p>For a complete kernel-to-ISO workflow, continue to the <a href="os-manual.html">Manual on how to make an Akernel OS</a>.</p>
+        </section>
+
+        <footer class="doc-footer">
+          <a href="index.html">Back to handbook</a>
+          <a href="os-manual.html">OS manual</a>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

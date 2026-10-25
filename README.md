@@ -1,10 +1,10 @@
-# akernel v1.1
+# akernel 1.2.0nr nightly
 
 akernel is a small freestanding kernel scaffold with separate 32-bit x86 and
 x86-64 ELF targets. It also has an opt-in x86-64 bootable ISO target using the
 Limine boot protocol.
 
-> **Status:** `make iso` creates an x86-64 Limine boot image for VM testing.
+> **Status:** `make CC=gcc iso-zip` creates an x86-64 Limine boot image and ZIP for VM testing.
 > This remains a kernel scaffold, not a complete operating system or installer.
 > The existing x86 and x86-64 ELF targets are separate legacy outputs.
 
@@ -14,8 +14,9 @@ GNU Make, GCC (with 32-bit support), GNU binutils, and NASM are required for
 the legacy ELF targets. The optional ISO target additionally requires `curl`,
 `sha256sum`, `tar`, and `xorriso`; its pinned Limine v12.9.4 binaries are
 downloaded to `build/` and checked against a fixed SHA-256 before extraction.
+Creating the compressed ISO archive with `make iso-zip` also requires `zip`.
 The ISO also includes Limine's binary-package license and third-party notices.
-Only the ISO target needs those additional tools.
+The ISO and ISO-ZIP targets need those additional tools.
 
 ### Linux
 
@@ -23,17 +24,20 @@ On Debian or Ubuntu:
 
 ```sh
 sudo apt-get update
-sudo apt-get install --yes build-essential gcc-multilib nasm curl xorriso
+sudo apt-get install --yes build-essential gcc-multilib nasm curl xorriso zip unzip
 make
-make iso
+make CC=gcc iso-zip
 ```
 
 `make check-x86` and `make check-x86_64` build individual targets. Outputs are
-written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`. `make iso`
-builds `build/akernel-1.1.109403-x86_64.iso`, which supports x86-64 BIOS and
-UEFI boot through Limine. To test it with QEMU, install `qemu-system-x86` and
-run `make run-qemu`. The VM target boots only the ISO; it does not access a
-physical disk.
+written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`.
+`make CC=gcc iso-zip` builds `build/akernel-v1.2.0nr-x86_64.iso`, which supports
+x86-64 BIOS and UEFI boot through Limine. To test it with QEMU, install
+`qemu-system-x86` and run `make run-qemu`. The VM target boots only the ISO; it
+does not access a physical disk. The command also creates
+`build/akernel-v1.2.0nr-x86_64.zip` and its `.sha256` checksum file. Verify the
+archive with `unzip -t build/akernel-v1.2.0nr-x86_64.zip` and
+`sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256`.
 
 ### Windows
 
@@ -89,22 +93,25 @@ browser keeps its anonymous identity in a persistent HttpOnly cookie; clearing
 cookies loses access to that guest identity. See the [forum API guide](web/docs/#forum-api)
 for deployment details.
 
-## Beta release 1.1.109403
+## Nightly build 1.2.0nr
 
-Versioned beta notes and the artifact manifest are in
-[`releases/v1.1.109403/`](releases/v1.1.109403/). The repository can build an
+Nightly notes and the artifact manifest are in
+[`releases/v1.2.0nr/`](releases/v1.2.0nr/). The repository can build an
 x86-64 Limine ISO locally, but no ISO is attached to or published with this
-source release. Test it only in a disposable VM; do not replace a Linux
+source snapshot. Test it only in a disposable VM; do not replace a Linux
 installation or write the ISO to a physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
-The website's [beta downloads page](web/downloads/) explains the current ISO
+The website's [nightly downloads page](web/downloads/) explains the current ISO
 availability, and the [browser loader demo](web/loader/) provides a simulated
-preview that does not execute the kernel.
+preview that does not execute the kernel. Previous beta records remain in
+[`releases/v1.1.109403/`](releases/v1.1.109403/).
 
 The `pkg/akernel/` tree contains package metadata, a text system-information
 renderer (`fetch`, output through a caller-provided writer), and a system
 interface stub; it is not an installer or complete package manager. See the
-[package status guide](web/docs/#packages) before using those headers.
+[package guide](web/docs/package-guide.html) before creating package archives
+and the [OS manual](web/docs/os-manual.html) for a start-to-finish project
+workflow.
 
 ## Fork, contribute, and publish
 
@@ -131,17 +138,11 @@ Use the repository's issue forms to report reproducible bugs or propose
 features. The bug form links to private vulnerability reporting for security
 issues; do not post exploitable details publicly.
 
-To publish a source release, push a version tag and create a GitHub Release for
-that tag:
-
-```sh
-git tag v(whatever you are work)
-git push origin v1.1
-```
-
-Attach the built ELF files or a separately tested ISO if you want to distribute
-the compiled scaffold. The ISO is for VM testing and is not an installable
-operating system.
+This nightly is an in-progress source snapshot, not a stable release tag.
+The earlier beta record is preserved in
+[`releases/v1.2beta/`](releases/v1.2beta/) and the older beta in
+[`releases/v1.1.109403/`](releases/v1.1.109403/). The ISO is for VM testing
+and is not an installable operating system.
 
 ## Boot status
 
@@ -150,10 +151,11 @@ linker files are in `kernel/arch/`, public kernel headers are in
 `kernel/include/akernel/`, and implementation modules are in `kernel/src/`.
 The opt-in Limine kernel target uses the x86-64 Limine protocol, requests an
 RGB framebuffer, and renders the package system-information display there. The
-ISO target packages Limine for BIOS and UEFI boot. The original x86 and
-x86-64 ELF targets still use their legacy entry points and are not bootable
-images. This project does not include an installer, a disk-writing target, or
-a complete operating system.
+framebuffer console includes a built-in 5x7 Latin font with lowercase letters
+and common punctuation. The ISO target packages Limine for BIOS and UEFI boot.
+The original x86 and x86-64 ELF targets still use their legacy entry points
+and are not bootable images. This project does not include an installer, a
+disk-writing target, or a complete operating system.
 
 ## Package and target compatibility
 

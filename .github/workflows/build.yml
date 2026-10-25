@@ -27,6 +27,36 @@ jobs:
       - name: Compile and link
         run: make check-${{ matrix.arch }}
 
+  iso:
+    name: Build GCC Limine ISO
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ISO build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes build-essential gcc-multilib nasm curl xorriso file zip unzip
+      - name: Show GCC version
+        run: gcc --version
+      - name: Build ISO ZIP with GCC
+        run: make CC=gcc iso-zip
+      - name: Verify ISO artifact
+        run: test -s build/akernel-v1.2.0nr-x86_64.iso
+      - name: Verify ISO filesystem
+        run: file build/akernel-v1.2.0nr-x86_64.iso | grep -q "ISO 9660"
+      - name: Verify ZIP and checksum
+        run: |
+          unzip -t build/akernel-v1.2.0nr-x86_64.zip
+          sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akernel-v1.2.0nr-iso
+          path: |
+            build/akernel-v1.2.0nr-x86_64.iso
+            build/akernel-v1.2.0nr-x86_64.zip
+            build/akernel-v1.2.0nr-x86_64.zip.sha256
+          if-no-files-found: error
+
   website:
     name: Check website
     runs-on: ubuntu-latest
