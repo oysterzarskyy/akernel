@@ -1,0 +1,7 @@
+# .github/labeler.yml
+kernel:
+  - kernel/**/*
+website:
+  - web/**/*
+aash:
+  - pkg/akernel/aash/**/*

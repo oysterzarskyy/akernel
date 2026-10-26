@@ -1,5 +1,5 @@
 #include <stddef.h>
-
+#include "../../kernel/include/akernel/version.h"
 #include "include/setup.h"
 
 static const char setup_script[] =
@@ -12,14 +12,14 @@ static const char setup_script[] =
     "echo      ||  __  ||\n"
     "echo      |########|\n"
     "echo      +--------+\n"
-    "echo        CHOC-OS\n"
+    "echo        " AKERNEL_VERSION_NAME "\n"
     "color cyan\n"
-    "echo AASH 0.1.0-nightly - akernel shell-like script interpreter\n"
+    "echo " AKERNEL_VERSION_NAME " " AKERNEL_VERSION "-nightly - akernel shell-like script interpreter\n"
     "version\n"
     "setup\n"
     "help\n"
     "color green\n"
-    "echo AASH preview complete; the kernel will halt safely.\n";
+    "echo " AKERNEL_VERSION_NAME " preview complete; the kernel will halt safely.\n";
 
 const char *akernel_setup_boot_script(void)
 {
