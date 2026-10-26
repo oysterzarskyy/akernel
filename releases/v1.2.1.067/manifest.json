@@ -27,6 +27,9 @@
     "archive_checksum_path": "build/akernel-v1.2.1.067-x86_64.zip.sha256",
     "archive_sha256": "49610399c88511107e533cdcd9c8ffdcc24317f5ee3bdd81e35e7a0b5b8d59eb",
     "archive_size_bytes": 1310749,
+    "checksum_filename": "SHA256SUMS.txt",
+    "checksum_sha256": "70492db9cca4d8eec717da28d6db2a66771ff0bf6841eb01113e373b0330f61a",
+    "checksum_size_bytes": 192,
     "release_url": "https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1.067",
     "release_assets": {
       "iso": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1.067/akernel-v1.2.1.067-x86_64.iso",
