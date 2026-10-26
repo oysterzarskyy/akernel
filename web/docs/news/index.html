@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      /* news style html */
+      :root {
+        --news-text-colorli: #a5a5a5;
+        --color-bg: linear-gradient(0deg, #181818, #222222);
+        --color-fg: #f0f0f0;
+        --h1-color: #c8c8c8;
+        --color-accent: #ff6600;
+        --font-family: 'Arial', 'Helvetica', sans-serif;
+      }
+      body {
+        /* Changed from background-color to background to support the gradient variable */
+        background: var(--color-bg);
+        color: var(--color-fg);
+        font-family: var(--font-family);
+        letter-spacing: 0.8px;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        color: var(--h1-color);
+        font-size: 2em;
+        margin-bottom: 0.5em;
+        font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+      }
+
+        .breadcrumb {
+            font-size: 0.9em;
+            margin-bottom: 1em;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        nav.topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #181818;
+            padding: 10px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+            color: var(--news-text-colorli);
+        }
+    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class="topbar" aria-label="Project links">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">News</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="../index.html">Forum</a>
+        <a href="../docs/">Documentation</a>
+        <a href="../loader/index.html">Browser demo</a>
+        <a href="../about/">About</a>
+      </nav>
+    </nav>
+    <h1>News</h1>
+    <div class="breadcrumb"><a href="../">akernel</a><span>/</span>News</div>
+    <p>Welcome to the akernel news page. Here you will find the latest updates and announcements regarding the akernel project.</p>
+    <ul>
+      <li><strong>Version 1.2.0 Released:</strong> The Chocolate Orange release is now available for download. It includes several new features and improvements.</li>
+      <li><strong>AASH Nightly Preview:</strong> The AASH 0.1 nightly build is available for testing. This experimental shell-like interpreter is still in development.</li>
+      <li><strong>Community Contributions:</strong> We welcome contributions from the community. Check out our GitHub repository for more information on how to get involved.</li>
+    </ul>
+  </body>
+</html>
