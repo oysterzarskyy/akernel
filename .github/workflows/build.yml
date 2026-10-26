@@ -85,10 +85,22 @@ jobs:
           }
 
           smoke_boot bios
-          ovmf_code="$(find /usr/share/OVMF -name 'OVMF_CODE*.fd' -print -quit)"
+          ovmf_code=""
+          ovmf_vars=""
+          for suffix in "" "_4M"; do
+            candidate_code="/usr/share/OVMF/OVMF_CODE${suffix}.fd"
+            candidate_vars="/usr/share/OVMF/OVMF_VARS${suffix}.fd"
+            if [ -f "$candidate_code" ] && [ -f "$candidate_vars" ]; then
+              ovmf_code="$candidate_code"
+              ovmf_vars="$candidate_vars"
+              break
+            fi
+          done
           test -n "$ovmf_code"
+          cp "$ovmf_vars" build/OVMF_VARS.fd
           smoke_boot uefi -machine q35 \
-            -drive "if=pflash,format=raw,readonly=on,file=${ovmf_code}"
+            -drive "if=pflash,format=raw,readonly=on,file=${ovmf_code}" \
+            -drive "if=pflash,format=raw,file=build/OVMF_VARS.fd"
       - uses: actions/upload-artifact@v4
         with:
           name: akernel-v1.2.1.067-nightly-iso
