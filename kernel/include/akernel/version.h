@@ -1,6 +1,6 @@
 /*
  * who: akernel developers
- * All rights reserved.
+ * LICENSED UNDER THE GPLv3 license
  *  This header file defines the version information for the akernel project.
  *
  * AKERNEL_VERSION_STRING:
@@ -16,9 +16,9 @@
 
 #define AKERNEL_VERSION_MAJOR 1U
 #define AKERNEL_VERSION_MINOR 2U
-#define AKERNEL_VERSION_PATCH 67U
-#define AKERNEL_VERSION_STRING "1.2.1.067"
-#define AKERNEL_VERSION "1.2.1.067"
-#define AKERNEL_VERSION_NAME "AASH Nightly"
+#define AKERNEL_VERSION_PATCH 0U
+#define AKERNEL_VERSION_STRING "1.2.0"
+#define AKERNEL_VERSION "1.2.0"
+#define AKERNEL_VERSION_NAME "Chocolate Orange"
 
 #endif
