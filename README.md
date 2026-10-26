@@ -1,11 +1,13 @@
-# akernel 1.2.1 "Slim Jims"
+# akernel 1.2.1.067 nightly (AASH)
 
 akernel is a small freestanding kernel scaffold with separate 32-bit x86 and
 x86-64 ELF targets. It also has an opt-in x86-64 bootable ISO target using the
 Limine boot protocol.
 
-> **Status:** `make CC=gcc iso-zip` creates an x86-64 Limine boot image and ZIP for VM testing.
-> This remains a kernel scaffold, not a complete operating system or installer.
+> **Nightly pre-release:** `make CC=gcc iso-zip` creates an x86-64 Limine boot
+> image and ZIP for VM testing. This build previews colored ASCII output and
+> AASH, a small shell-like language interpreted by the kernel. It is not a
+> complete operating system or installer.
 > The existing x86 and x86-64 ELF targets are separate legacy outputs.
 
 ## Build
@@ -31,13 +33,14 @@ make CC=gcc iso-zip
 
 `make check-x86` and `make check-x86_64` build individual targets. Outputs are
 written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`.
-`make CC=gcc iso-zip` builds `build/akernel-v1.2.1-x86_64.iso`, which supports
+`make CC=gcc iso-zip` builds `build/akernel-v1.2.1.067-x86_64.iso`, which supports
 x86-64 BIOS and UEFI boot through Limine. To test it with QEMU, install
 `qemu-system-x86` and run `make run-qemu`. The VM target boots only the ISO; it
 does not access a physical disk. The command also creates
-`build/akernel-v1.2.1-x86_64.zip` and its `.sha256` checksum file. Verify the
-archive with `unzip -t build/akernel-v1.2.1-x86_64.zip` and
-`sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256`.
+`build/akernel-v1.2.1.067-x86_64.zip` and its `.sha256` checksum file. Verify
+the archive with `unzip -t build/akernel-v1.2.1.067-x86_64.zip` and
+`sha256sum -c build/akernel-v1.2.1.067-x86_64.zip.sha256`. Run
+`make test-aash` to test the AASH command interpreter.
 
 ### Windows
 
@@ -93,19 +96,25 @@ browser keeps its anonymous identity in a persistent HttpOnly cookie; clearing
 cookies loses access to that guest identity. See the [forum API guide](web/docs/#forum-api)
 for deployment details.
 
-## Version 1.2.1 "Slim Jims"
+## Nightly 1.2.1.067 (AASH preview)
 
-Version notes and the artifact manifest are in
-[`releases/v1.2.1/`](releases/v1.2.1/). The repository can build an x86-64
-Limine ISO locally, and the boot-tested ISO and ZIP are published in the
+This is an explicitly experimental prerelease, not a replacement for stable
+1.2.1. Notes and the artifact manifest are in
+[`releases/v1.2.1.067/`](releases/v1.2.1.067/); the prerelease ISO and ZIP are
+on [GitHub](https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1.067).
+The kernel runs AASH boot-embedded scripts with `echo`, `color`, `setup`,
+`version`, and `help` commands. The setup command is a non-destructive
+preflight preview; there is no keyboard input, filesystem, or disk installer.
+See the [AASH guide](web/docs/aash.html) for the current syntax and limits.
+The previous stable ISO remains available in the
 [v1.2.1 GitHub release](https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1).
 MSYS2 UCRT64 users need an `x86_64-elf` GCC cross-toolchain; the native UCRT64
 compiler targets Windows PE. Test the ISO only in a disposable VM; do not
 replace a Linux installation or write the ISO to a physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
-The website's [downloads page](web/downloads/) explains the current ISO
-availability, and the [browser loader demo](web/loader/) provides a simulated
-preview that does not execute the kernel. Previous release records remain in
+The website's [downloads page](web/downloads/) lists stable and nightly images.
+The [browser loader demo](web/loader/) is a simulation and does not execute
+the kernel. Older release records remain in
 [`releases/v1.2.0nr/`](releases/v1.2.0nr/) and
 [`releases/v1.1.109403/`](releases/v1.1.109403/).
 

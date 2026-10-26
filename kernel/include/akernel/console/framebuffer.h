@@ -33,4 +33,9 @@ int akernel_framebuffer_console_write(const char *text,
                                       unsigned int length,
                                       void *context);
 
+int akernel_framebuffer_console_set_color(
+    struct akernel_framebuffer_console *console,
+    const char *name,
+    unsigned int length);
+
 #endif

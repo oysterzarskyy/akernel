@@ -44,7 +44,7 @@
 
         <section class="callout" aria-label="Current project limits">
           <span class="callout-mark">!</span>
-          <p><strong>Starting point, not a finished OS.</strong> The current Limine image starts the x86-64 kernel, draws a framebuffer console, prints fetch information, and halts. It has no scheduler, userspace, filesystem, drivers, network stack, package installer, or OS installer.</p>
+          <p><strong>Starting point, not a finished OS.</strong> The 1.2.1.067 nightly starts the x86-64 kernel, draws colored framebuffer text, runs an AASH boot script, displays a non-destructive setup preflight, and halts. It has no keyboard input, scheduler, userspace, filesystem, storage drivers, network stack, package installer, or OS installer.</p>
         </section>
 
         <section class="doc-section" id="scope">
@@ -71,9 +71,10 @@ git clone https://github.com/oysterzarskyy/akernel.git
 cd akernel
 make CC=gcc
 make CC=gcc iso-zip
+make test-aash
 make run-qemu</code></pre>
           </div>
-          <p>Record the Git commit, GCC version, and build output. The generated ISO is <code>build/akernel-v1.2.1-x86_64.iso</code>; its compressed copy and checksum sit beside it. See the <a href="steps/linux-ubuntu.html">Ubuntu build guide</a> for detailed prerequisites.</p>
+          <p>Record the Git commit, GCC version, and build output. The generated nightly ISO is <code>build/akernel-v1.2.1.067-x86_64.iso</code>; its compressed copy and checksum sit beside it. See the <a href="steps/linux-ubuntu.html">Ubuntu build guide</a> for detailed prerequisites.</p>
         </section>
 
         <section class="doc-section" id="develop">
@@ -86,7 +87,7 @@ make run-qemu</code></pre>
             <li><span>04</span><p>Introduce interrupts, memory management, device drivers, and scheduling as separate milestones, each with its own tests and failure handling.</p></li>
             <li><span>05</span><p>Do not enable interrupts or access hardware before the required tables, handlers, and device state are initialized.</p></li>
           </ol>
-          <p>Kernel packages are currently metadata only. The <a href="package-guide.html">package guide</a> explains the descriptor fields and the separate ISO/ZIP distribution workflow.</p>
+          <p>Kernel packages are currently metadata only. The <a href="package-guide.html">package guide</a> explains the descriptor fields and the separate ISO/ZIP distribution workflow. AASH is an experimental built-in script interpreter, not userspace; see the <a href="aash.html">AASH guide</a>.</p>
         </section>
 
         <section class="doc-section" id="test">

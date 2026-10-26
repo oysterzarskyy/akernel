@@ -11,8 +11,8 @@ LIMINE_SHA256 := 847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b
 LIMINE_ARCHIVE := build/limine-binary-$(LIMINE_VERSION).tar.gz
 LIMINE_DIR := build/limine-binary
 LIMINE_URL := https://github.com/Limine-Bootloader/limine/releases/download/v$(LIMINE_VERSION)/limine-binary.tar.gz
-ISO_IMAGE := build/akernel-v1.2.1-x86_64.iso
-ISO_ZIP := build/akernel-v1.2.1-x86_64.zip
+ISO_IMAGE := build/akernel-v1.2.1.067-x86_64.iso
+ISO_ZIP := build/akernel-v1.2.1.067-x86_64.zip
 
 CFLAGS := -std=c11 -ffreestanding -fno-pie -fno-stack-protector \
           -Wall -Wextra -Werror -O2 -Ikernel/include
@@ -23,7 +23,7 @@ LIMINE_CFLAGS := $(CFLAGS) -m64 -mcmodel=kernel -mno-red-zone \
                  -DAKPACKAGE_BOOT_PROTOCOL='"Limine"'
 
 .DELETE_ON_ERROR:
-.PHONY: all check-x86 check-x86_64 iso iso-zip run-qemu clean
+.PHONY: all check-x86 check-x86_64 test-aash iso iso-zip run-qemu clean
 
 all: check-x86 check-x86_64
 
@@ -35,8 +35,21 @@ iso: $(ISO_IMAGE)
 
 iso-zip: $(ISO_ZIP).sha256
 
+test-aash: build/test-aash
+	./build/test-aash
+
 run-qemu: iso
 	qemu-system-x86_64 -m 2G -cdrom $(ISO_IMAGE)
+
+build/test-aash: tests/aash_test.c pkg/akernel/aash/aash.c \
+                 pkg/akernel/aash/aash.h \
+                 pkg/akernel/setup/include/setup.h \
+                 kernel/include/akernel/console/framebuffer.h \
+                 kernel/include/akernel/version.h
+	mkdir -p build
+	$(CC) -std=c11 -Wall -Wextra -Werror -Ikernel/include \
+		-Ipkg/akernel/aash -Ipkg/akernel/setup \
+		tests/aash_test.c pkg/akernel/aash/aash.c -o $@
 
 build/x86/main.o: kernel/src/legacy/main.c \
                   kernel/include/akernel/kernel.h \
@@ -92,9 +105,12 @@ build/x86_64/kernel.o: kernel/src/kernel.c \
                        kernel/include/akernel/boot/limine.h \
                        kernel/include/akernel/console/framebuffer.h \
                        kernel/include/akernel/core/halt.h \
+                       pkg/akernel/aash/aash.h \
+                       pkg/akernel/setup/include/setup.h \
                        pkg/akernel/fetch/fetch.h
 	mkdir -p build/x86_64
-	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/fetch -c $< -o $@
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/aash \
+		-Ipkg/akernel/fetch -Ipkg/akernel/setup -c $< -o $@
 
 build/x86_64/framebuffer.o: kernel/src/console/framebuffer.c \
                             kernel/include/akernel/console/framebuffer.h
@@ -114,17 +130,34 @@ build/x86_64/limine-fetch.o: pkg/akernel/fetch/fetch.c \
 	mkdir -p build/x86_64
 	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/fetch -c $< -o $@
 
+build/x86_64/limine-aash.o: pkg/akernel/aash/aash.c \
+                            pkg/akernel/aash/aash.h \
+                            pkg/akernel/setup/include/setup.h \
+                            kernel/include/akernel/version.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/aash \
+		-Ipkg/akernel/setup -c $< -o $@
+
+build/x86_64/limine-setup.o: pkg/akernel/setup/setup.c \
+                             pkg/akernel/setup/include/setup.h \
+                             kernel/include/akernel/console/framebuffer.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/setup -c $< -o $@
+
 build/x86_64/akernel-limine.elf: build/x86_64/kernel.o \
                                 build/x86_64/limine.o \
                                 build/x86_64/framebuffer.o \
                                 build/x86_64/limine-halt.o \
                                 build/x86_64/limine-fetch.o \
+                                build/x86_64/limine-aash.o \
+                                build/x86_64/limine-setup.o \
                                 kernel/arch/x86_64/limine.ld
 	$(LD_X86_64) -m elf_x86_64 -z max-page-size=0x1000 \
 		-T kernel/arch/x86_64/limine.ld -o $@ \
 		build/x86_64/kernel.o build/x86_64/limine.o \
 		build/x86_64/framebuffer.o build/x86_64/limine-halt.o \
-		build/x86_64/limine-fetch.o
+		build/x86_64/limine-fetch.o build/x86_64/limine-aash.o \
+		build/x86_64/limine-setup.o
 
 $(LIMINE_ARCHIVE):
 	mkdir -p build

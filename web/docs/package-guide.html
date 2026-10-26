@@ -19,7 +19,8 @@
       <nav class="topbar-links" aria-label="Project links">
         <a href="index.html">Handbook</a>
         <a href="os-manual.html">OS manual</a>
-        <a href="../downloads/">Version 1.2.1 downloads</a>
+        <a href="aash.html">AASH guide</a>
+        <a href="../downloads/">Stable and nightly downloads</a>
         <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
       </nav>
     </header>
@@ -36,7 +37,7 @@
       <main class="document">
         <div class="breadcrumb"><a href="index.html">Handbook</a><span>/</span>Package guide</div>
         <header class="doc-heading">
-          <p class="overline">PACKAGING · VERSION 1.2.1</p>
+          <p class="overline">PACKAGING · NIGHTLY 1.2.1.067</p>
           <h1>How to package your akernels</h1>
           <p class="lead">Build a bootable test image, verify it, and organize experimental package metadata without implying that akernel has an installer.</p>
         </header>
@@ -60,15 +61,23 @@ sudo apt install -y build-essential gcc-multilib binutils nasm curl xorriso zip 
             <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
             <pre><code>make clean
 make CC=gcc iso-zip
-unzip -t build/akernel-v1.2.1-x86_64.zip
-sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256
-file build/akernel-v1.2.1-x86_64.iso</code></pre>
+make test-aash
+unzip -t build/akernel-v1.2.1.067-x86_64.zip
+sha256sum -c build/akernel-v1.2.1.067-x86_64.zip.sha256
+file build/akernel-v1.2.1.067-x86_64.iso</code></pre>
           </div>
-          <p>The outputs are <code>build/akernel-v1.2.1-x86_64.iso</code>, <code>build/akernel-v1.2.1-x86_64.zip</code>, and its <code>.sha256</code> file. Boot the ISO only as virtual CD media in a disposable VM. The image is not an installer.</p>
+          <p>The nightly outputs are <code>build/akernel-v1.2.1.067-x86_64.iso</code>, <code>build/akernel-v1.2.1.067-x86_64.zip</code>, and its <code>.sha256</code> file. Boot the ISO only as virtual CD media in a disposable VM. The image is not an installer.</p>
+        </section>
+
+        <section class="doc-section" id="aash">
+          <p class="section-kicker">03 — EXPERIMENTAL BOOT SCRIPT</p>
+          <h2>AASH 0.1</h2>
+          <p>The 1.2.1.067 nightly includes AASH, a freestanding C interpreter for a small boot-embedded command script. It supports <code>echo</code>, <code>color</code>, <code>setup</code>, <code>version</code>, and <code>help</code>. It is not compatible with Bash, Zsh, or Fish and does not load external scripts.</p>
+          <p>The <code>setup</code> command shows a non-destructive preflight status screen; it does not install an OS or write to a disk. See the <a href="aash.html">AASH guide</a> for syntax, supported colors, and limitations.</p>
         </section>
 
         <section class="doc-section" id="metadata">
-          <p class="section-kicker">02 — DESCRIBE A FUTURE PACKAGE</p>
+          <p class="section-kicker">04 — DESCRIBE A FUTURE PACKAGE</p>
           <h2>Start with the C descriptor</h2>
           <p>Package sources can define the metadata structure in <code>pkg/akernel/package.h</code>. For example:</p>
           <div class="code-block">
@@ -113,7 +122,7 @@ static const akpkg_descriptor example_package = {
         </section>
 
         <section class="doc-section" id="publish">
-          <p class="section-kicker">03 — TEST AND SHARE</p>
+          <p class="section-kicker">05 — TEST AND SHARE</p>
           <h2>Verify before distributing</h2>
           <ul class="check-list">
             <li>Build from a clean checkout and keep the compiler/tool versions with your notes.</li>

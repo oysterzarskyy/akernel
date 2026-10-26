@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#181818">
+    <meta name="description" content="AASH 0.1 nightly: akernel's experimental freestanding shell-like boot script interpreter.">
+    <title>AASH nightly guide — akernel</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="akernel forum home">
+        <span class="brand-mark" aria-hidden="true">a</span>
+        <span>akernel</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-section">AASH guide</span>
+      </a>
+      <nav class="topbar-links" aria-label="Project links">
+        <a href="index.html">Handbook</a>
+        <a href="../downloads/">Downloads</a>
+        <a href="package-guide.html">Package guide</a>
+        <a href="https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1.067">Nightly prerelease ↗</a>
+      </nav>
+    </header>
+
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="AASH guide navigation">
+        <p class="sidebar-heading">AASH 0.1 NIGHTLY</p>
+        <a class="sidebar-link active" href="#overview">Overview</a>
+        <a class="sidebar-link" href="#commands">Commands</a>
+        <a class="sidebar-link" href="#setup">Setup preview</a>
+        <a class="sidebar-link" href="#limits">Current limits</a>
+        <div class="sidebar-note">Experimental<br>Not Bash-compatible</div>
+      </aside>
+
+      <main class="document">
+        <div class="breadcrumb"><a href="index.html">Handbook</a><span>/</span>AASH nightly guide</div>
+        <header class="doc-heading" id="overview">
+          <p class="overline">NIGHTLY 1.2.1.067 · EXPERIMENTAL LANGUAGE</p>
+          <h1>AASH</h1>
+          <p class="lead">A small, freestanding, shell-like command language interpreted by the akernel boot code.</p>
+        </header>
+
+        <section class="callout" aria-label="AASH status">
+          <span class="callout-mark">!</span>
+          <p><strong>AASH is an early preview, not a general-purpose shell.</strong> It currently executes the boot script embedded in the kernel. There is no interactive prompt, keyboard input, filesystem, or external script loader.</p>
+        </section>
+
+        <section class="doc-section" id="commands">
+          <p class="section-kicker">01 — COMMANDS</p>
+          <h2>One command per line</h2>
+          <p>AASH uses a simple command followed by plain-text arguments. It does not yet parse quotes, variables, pipes, conditionals, or command substitution.</p>
+          <div class="code-block">
+            <div class="code-caption"><span>AASH</span><span>boot script syntax</span></div>
+            <pre><code># comments start at the beginning of a line
+color cyan
+echo AASH nightly setup preview
+version
+setup
+help
+color green</code></pre>
+          </div>
+          <div class="file-list">
+            <div><code>echo TEXT</code><span>Write text and a newline to the framebuffer console.</span></div>
+            <div><code>color NAME</code><span>Set the foreground to red, green, yellow, blue, magenta, cyan, or white.</span></div>
+            <div><code>setup</code><span>Run the non-destructive first-boot preflight display.</span></div>
+            <div><code>version</code><span>Print the kernel and AASH versions.</span></div>
+            <div><code>help</code><span>Print the built-in command list and current language limits.</span></div>
+          </div>
+          <p>The current boot script is defined in <code>pkg/akernel/setup/setup.c</code> and interpreted by <code>pkg/akernel/aash/aash.c</code>. Run <code>make test-aash</code> for parser and command-dispatch tests.</p>
+        </section>
+
+        <section class="doc-section" id="setup">
+          <p class="section-kicker">02 — SETUP PREVIEW</p>
+          <h2>A safe preflight, not an installer</h2>
+          <p>The <code>setup</code> command checks that the Limine boot path and framebuffer console are usable, then displays the missing capabilities that block a real OS installer. It does not write to storage or make persistent changes.</p>
+          <ul class="check-list">
+            <li>Framebuffer output is available for status messages.</li>
+            <li>Keyboard input, storage drivers, and filesystem support are not implemented.</li>
+            <li>No disk is partitioned, formatted, or modified.</li>
+            <li>Booting the image is only supported as virtual optical media in a disposable VM.</li>
+          </ul>
+        </section>
+
+        <section class="doc-section" id="limits">
+          <p class="section-kicker">03 — NIGHTLY LIMITS</p>
+          <h2>Language and release status</h2>
+          <p>AASH is inspired by shell languages such as Bash, Zsh, and Fish, but it is its own language and does not run their scripts. The interpreter is written in freestanding C and runs a compiled-in script; it is not a userspace program.</p>
+          <p>Version 1.2.1.067 is an experimental prerelease. It must not be treated as the stable 1.2.1 release or as a complete operating system. Download it from the <a href="https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1.067">nightly GitHub prerelease</a> and follow the <a href="../downloads/">VM safety guidance</a>.</p>
+        </section>
+
+        <footer class="doc-footer">
+          <a href="index.html">Handbook</a>
+          <a href="../downloads/">Stable and nightly downloads</a>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

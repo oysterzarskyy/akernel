@@ -59,6 +59,26 @@ static uint32_t framebuffer_colour(
                                framebuffer->blue_mask_shift);
 }
 
+static int framebuffer_name_matches(const char *name,
+                                   unsigned int length,
+                                   const char *expected,
+                                   unsigned int expected_length)
+{
+    unsigned int index;
+
+    if (length != expected_length) {
+        return 0;
+    }
+
+    for (index = 0; index < length; ++index) {
+        if (name[index] != expected[index]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 static int framebuffer_is_valid(
     const struct akernel_framebuffer_info *framebuffer)
 {
@@ -258,5 +278,55 @@ int akernel_framebuffer_console_write(const char *text,
         console->cursor_x += 6u * console->scale;
     }
 
+    return 0;
+}
+
+int akernel_framebuffer_console_set_color(
+    struct akernel_framebuffer_console *console,
+    const char *name,
+    unsigned int length)
+{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+
+    if (console == NULL || name == NULL) {
+        return -1;
+    }
+
+    if (framebuffer_name_matches(name, length, "red", 3u)) {
+        red = 255u;
+        green = 95u;
+        blue = 86u;
+    } else if (framebuffer_name_matches(name, length, "green", 5u)) {
+        red = 57u;
+        green = 211u;
+        blue = 83u;
+    } else if (framebuffer_name_matches(name, length, "yellow", 6u)) {
+        red = 255u;
+        green = 205u;
+        blue = 86u;
+    } else if (framebuffer_name_matches(name, length, "blue", 4u)) {
+        red = 91u;
+        green = 156u;
+        blue = 255u;
+    } else if (framebuffer_name_matches(name, length, "magenta", 7u)) {
+        red = 192u;
+        green = 132u;
+        blue = 252u;
+    } else if (framebuffer_name_matches(name, length, "cyan", 4u)) {
+        red = 86u;
+        green = 211u;
+        blue = 210u;
+    } else if (framebuffer_name_matches(name, length, "white", 5u)) {
+        red = 230u;
+        green = 237u;
+        blue = 243u;
+    } else {
+        return -1;
+    }
+
+    console->foreground =
+        framebuffer_colour(&console->framebuffer, red, green, blue);
     return 0;
 }

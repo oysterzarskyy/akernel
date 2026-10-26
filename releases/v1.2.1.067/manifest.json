@@ -1,0 +1,68 @@
+{
+  "project": "akernel",
+  "version": "1.2.1.067",
+  "nickname": "AASH Nightly",
+  "channel": "nightly",
+  "prerelease": true,
+  "release_tag": "v1.2.1.067",
+  "based_on": "v1.2.1",
+  "features": [
+    "experimental colored ASCII framebuffer output",
+    "AASH 0.1 freestanding boot-script interpreter",
+    "non-destructive setup preflight screen"
+  ],
+  "limitations": [
+    "AASH scripts are embedded in the kernel",
+    "no keyboard input or interactive shell",
+    "no filesystem, storage drivers, or disk installation"
+  ],
+  "iso": {
+    "filename": "akernel-v1.2.1.067-x86_64.iso",
+    "build_path": "build/akernel-v1.2.1.067-x86_64.iso",
+    "status": "built_not_published",
+    "sha256": "37d97899dceb67ec18c5d413f100537be37069fd3abd33ac524c43eb1d8d51dd",
+    "size_bytes": 4423680,
+    "archive_filename": "akernel-v1.2.1.067-x86_64.zip",
+    "archive_build_path": "build/akernel-v1.2.1.067-x86_64.zip",
+    "archive_checksum_path": "build/akernel-v1.2.1.067-x86_64.zip.sha256",
+    "archive_sha256": "49610399c88511107e533cdcd9c8ffdcc24317f5ee3bdd81e35e7a0b5b8d59eb",
+    "archive_size_bytes": 1310749,
+    "release_url": "https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1.067",
+    "release_assets": {
+      "iso": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1.067/akernel-v1.2.1.067-x86_64.iso",
+      "archive": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1.067/akernel-v1.2.1.067-x86_64.zip",
+      "checksums": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1.067/SHA256SUMS.txt"
+    },
+    "compiler": "GCC 15.2.0 (x86_64-elf cross compiler)",
+    "binutils_version": "2.45",
+    "build_environment": "MSYS2 UCRT64",
+    "boot_protocol": "Limine",
+    "architectures": [
+      "x86_64"
+    ],
+    "firmware": [
+      "BIOS",
+      "UEFI"
+    ],
+    "limine_version": "12.9.4",
+    "limine_binary_sha256": "847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b1",
+    "build_command": "make CC_X86_64=x86_64-elf-gcc LD_X86_64=x86_64-elf-ld iso-zip",
+    "test_command": "qemu-system-x86_64 -m 512M -cdrom build/akernel-v1.2.1.067-x86_64.iso -boot d",
+    "test_result": "passed",
+    "test_environment": "QEMU 11.1.1, BIOS",
+    "test_note": "Kernel reached the halt loop with no guest errors; QEMU framebuffer capture contained magenta, cyan, yellow, and green text.",
+    "included_in_source_release": false
+  },
+  "aash": {
+    "version": "0.1.0-nightly",
+    "commands": [
+      "echo",
+      "color",
+      "setup",
+      "version",
+      "help"
+    ],
+    "script_source": "pkg/akernel/setup/setup.c"
+  },
+  "recommended_test": "Boot only as virtual optical media in a disposable VM; do not attach a physical disk."
+}
