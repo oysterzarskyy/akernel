@@ -4,6 +4,15 @@
 
 static const char setup_script[] =
     "# AASH boot setup preview\n"
+    "color yellow\n"
+    "echo      +--------+\n"
+    "echo      |########|\n"
+    "echo      || o  o ||\n"
+    "echo      ||  ..  ||\n"
+    "echo      ||  __  ||\n"
+    "echo      |########|\n"
+    "echo      +--------+\n"
+    "echo        CHOC-OS\n"
     "color cyan\n"
     "echo AASH 0.1.0-nightly - akernel shell-like script interpreter\n"
     "version\n"

@@ -34,6 +34,7 @@
         <a class="sidebar-link active" href="#overview">Overview</a>
         <a class="sidebar-link" href="#requirements">Requirements</a>
         <a class="sidebar-link" href="steps/">Build guides by OS</a>
+        <a class="sidebar-link" href="#install-safety">Installer safety</a>
         <a class="sidebar-link" href="../downloads/">Version 1.2.1 downloads</a>
         <a class="sidebar-link" href="../loader/">Browser loader demo</a>
         <a class="sidebar-link" href="#layout">Project layout</a>
@@ -63,6 +64,7 @@
           <span class="callout-mark">i</span>
           <p><strong>Project status.</strong> The opt-in <code>make CC=gcc iso</code> target builds an x86-64 Limine boot image for BIOS and UEFI VM testing. Use <code>make iso-zip</code> to create a ZIP and SHA-256 file alongside it. akernel is still a kernel scaffold, not a complete operating system or installer; the legacy ELF targets are unchanged.</p>
         </section>
+        <img class="mascot-art" src="../assets/choc-kernel-mascot.svg" alt="Cocoa, the pixel-art Choc-OS chocolate mascot">
 
         <section class="doc-section" id="requirements">
           <p class="section-kicker">01 — BEFORE YOU BEGIN</p>
@@ -90,6 +92,15 @@
             <li><a href="steps/macos-vm.html">macOS with an Ubuntu VM</a></li>
           </ul>
           <div class="note-line"><strong>Safety</strong><span>Test the locally built ISO in a disposable VM only. It is not an installer; never write it to a physical disk or replace your operating system.</span></div>
+        </section>
+
+        <section class="doc-section" id="install-safety">
+          <p class="section-kicker">03 — INSTALLER AND PARTITION SAFETY</p>
+          <h2>No disk installer is available</h2>
+          <p>The 1.2.1.067 AASH nightly cannot install Choc-OS or modify a disk. Keyboard input, disk drivers, and filesystem support are not implemented. Do not partition, format, or attach a physical disk to this image, including from a virtual machine.</p>
+          <p>Linux distributions listed in the build guides are host environments for compiling akernel, not guest operating systems that akernel can install. The requested Choc-OS installer and Linux guest installer are not implemented.</p>
+          <p>The proposed first Choc-OS layout is UEFI with a GPT partition table and a FAT32 EFI System Partition (ESP) containing the boot files. It has no separate root or data filesystem, and this layout is not yet implemented or validated. It is not an instruction to repartition a computer.</p>
+          <p>A future installer must identify its target explicitly, refuse disks with existing partitions or unrecognized contents, and be tested against disposable blank QEMU disks before any physical-disk support is considered. Until a release explicitly says otherwise, assume every disk-writing action is unsupported and unsafe.</p>
         </section>
 
         <section class="doc-section" id="layout">

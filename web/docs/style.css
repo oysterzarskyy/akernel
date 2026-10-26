@@ -119,6 +119,13 @@ pre code {
   overflow-x: auto;
   color: #80ba80;
 }
+.mascot-art {
+  display: block;
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
+  margin: 1ch auto;
+}
 .file-list {
   border-top: 1px solid #333;
   margin: 1ch 0;

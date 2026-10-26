@@ -46,6 +46,7 @@
           <span class="callout-mark">!</span>
           <p><strong>AASH is an early preview, not a general-purpose shell.</strong> It currently executes the boot script embedded in the kernel. There is no interactive prompt, keyboard input, filesystem, or external script loader.</p>
         </section>
+        <img class="mascot-art" src="../assets/choc-kernel-mascot.svg" alt="Cocoa, the pixel-art Choc-OS chocolate mascot">
 
         <section class="doc-section" id="commands">
           <p class="section-kicker">01 — COMMANDS</p>
@@ -81,6 +82,7 @@ color green</code></pre>
             <li>No disk is partitioned, formatted, or modified.</li>
             <li>Booting the image is only supported as virtual optical media in a disposable VM.</li>
           </ul>
+          <p><strong>Choc-OS installation is not available.</strong> The proposed first layout is UEFI/GPT with a FAT32 EFI System Partition and no separate root filesystem, but it is not implemented or validated. Do not partition or format a host disk, and do not attach a physical or non-disposable disk to the VM.</p>
         </section>
 
         <section class="doc-section" id="limits">

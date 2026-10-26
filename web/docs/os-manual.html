@@ -28,6 +28,7 @@
       <aside class="sidebar" aria-label="OS manual navigation">
         <p class="sidebar-heading">OS MANUAL</p>
         <a class="sidebar-link active" href="#scope">Set scope</a>
+        <a class="sidebar-link" href="#install-partitions">Install and partition safety</a>
         <a class="sidebar-link" href="#build">Build a baseline</a>
         <a class="sidebar-link" href="#develop">Develop features</a>
         <a class="sidebar-link" href="#test">Test and release</a>
@@ -46,6 +47,7 @@
           <span class="callout-mark">!</span>
           <p><strong>Starting point, not a finished OS.</strong> The 1.2.1.067 nightly starts the x86-64 kernel, draws colored framebuffer text, runs an AASH boot script, displays a non-destructive setup preflight, and halts. It has no keyboard input, scheduler, userspace, filesystem, storage drivers, network stack, package installer, or OS installer.</p>
         </section>
+        <img class="mascot-art" src="../assets/choc-kernel-mascot.svg" alt="Cocoa, the pixel-art Choc-OS chocolate mascot">
 
         <section class="doc-section" id="scope">
           <p class="section-kicker">01 — DEFINE A SMALL FIRST GOAL</p>
@@ -57,6 +59,14 @@
             <li>Keep hardware experiments inside an isolated VM and take snapshots before risky tests.</li>
             <li>Do not treat an ELF kernel or test ISO as installable on physical hardware.</li>
           </ul>
+        </section>
+
+        <section class="doc-section" id="install-partitions">
+          <p class="section-kicker">INSTALLATION SAFETY</p>
+          <h2>Choc-OS installer status and planned partitions</h2>
+          <p><strong>There is no installer in the current nightly.</strong> The kernel cannot accept keyboard input, access disks, create partitions, or write a filesystem. Linux in the build guides means a host used to compile akernel; it is not a Linux guest OS that Choc-OS can install. Do not use this image to install an OS, and do not attach a physical or non-disposable disk to a VM running it.</p>
+          <p>The proposed first install layout is UEFI boot on GPT with one FAT32 EFI System Partition (ESP) for boot files. No separate root or data filesystem is planned for that first milestone. This is only a design note: the layout has not been implemented or tested, and users must not create or format these partitions based on this page.</p>
+          <p>Any future installer must stop if it finds existing partitions or contents it cannot identify, require an explicit target selection, and pass disposable-VM tests before release. Do not assume a disk is safe to erase merely because it appears empty in a partitioning tool.</p>
         </section>
 
         <section class="doc-section" id="build">
@@ -74,7 +84,7 @@ make CC=gcc iso-zip
 make test-aash
 make run-qemu</code></pre>
           </div>
-          <p>Record the Git commit, GCC version, and build output. The generated nightly ISO is <code>build/akernel-v1.2.1.067-x86_64.iso</code>; its compressed copy and checksum sit beside it. See the <a href="steps/linux-ubuntu.html">Ubuntu build guide</a> for detailed prerequisites.</p>
+          <p>Record the Git commit, GCC version, and build output. The generated nightly ISO is <code>build/akernel-v1.2.1.067-x86_64.iso</code>; its compressed copy and checksum sit beside it. <code>make run-qemu</code> opens a VM window that stays open after the demo kernel halts; close the window to stop it. The guest has no interactive input yet. See the <a href="steps/linux-ubuntu.html">Ubuntu build guide</a> for detailed prerequisites.</p>
         </section>
 
         <section class="doc-section" id="develop">

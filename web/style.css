@@ -279,6 +279,12 @@ h1 {
   color: #cccccc;
   font-size: 13px;
 }
+.choc-mascot {
+  width: 72px;
+  height: 72px;
+  image-rendering: pixelated;
+  flex: 0 0 auto;
+}
 .search-box {
   width: min(270px, 35%);
   min-height: 38px;

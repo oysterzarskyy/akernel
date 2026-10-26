@@ -2,6 +2,7 @@ CC = gcc
 LD ?= ld
 NASM ?= nasm
 ZIP ?= zip
+QEMU ?= qemu-system-x86_64
 CC_X86 ?= $(CC)
 LD_X86 ?= $(LD)
 CC_X86_64 ?= $(CC)
@@ -39,7 +40,7 @@ test-aash: build/test-aash
 	./build/test-aash
 
 run-qemu: iso
-	qemu-system-x86_64 -m 2G -cdrom $(ISO_IMAGE)
+	$(QEMU) -m 2G -cdrom $(ISO_IMAGE) -no-reboot -no-shutdown
 
 build/test-aash: tests/aash_test.c pkg/akernel/aash/aash.c \
                  pkg/akernel/aash/aash.h \
