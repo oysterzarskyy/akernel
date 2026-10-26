@@ -59,10 +59,10 @@
         <p>These instructions run the build tools in a Linux environment. Native Windows PE or macOS Mach-O compilers do not produce the ELF targets expected by this project.</p>
       </section>
 
-      <section class="doc-section" id="nightly">
-        <p class="section-kicker">RECOMMENDED NIGHTLY TEST</p>
+      <section class="doc-section" id="iso-testing">
+        <p class="section-kicker">RECOMMENDED ISO TEST</p>
         <h2>Use an isolated virtual machine</h2>
-        <p>For nightly testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
+        <p>For ISO testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
         <p>On Linux, install <code>curl</code>, <code>xorriso</code>, and <code>zip</code> in addition to the standard build tools, then run <code>make CC=gcc iso-zip</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; other hypervisors can boot the ISO as virtual CD media.</p>
       </section>
 

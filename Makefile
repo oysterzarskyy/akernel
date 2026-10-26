@@ -11,13 +11,15 @@ LIMINE_SHA256 := 847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b
 LIMINE_ARCHIVE := build/limine-binary-$(LIMINE_VERSION).tar.gz
 LIMINE_DIR := build/limine-binary
 LIMINE_URL := https://github.com/Limine-Bootloader/limine/releases/download/v$(LIMINE_VERSION)/limine-binary.tar.gz
-ISO_IMAGE := build/akernel-v1.2.0nr-x86_64.iso
-ISO_ZIP := build/akernel-v1.2.0nr-x86_64.zip
+ISO_IMAGE := build/akernel-v1.2.1-x86_64.iso
+ISO_ZIP := build/akernel-v1.2.1-x86_64.zip
 
 CFLAGS := -std=c11 -ffreestanding -fno-pie -fno-stack-protector \
           -Wall -Wextra -Werror -O2 -Ikernel/include
 
+# Limine enters before the kernel initializes SSE, so keep early code on GPRs.
 LIMINE_CFLAGS := $(CFLAGS) -m64 -mcmodel=kernel -mno-red-zone \
+                 -mgeneral-regs-only \
                  -DAKPACKAGE_BOOT_PROTOCOL='"Limine"'
 
 .DELETE_ON_ERROR:

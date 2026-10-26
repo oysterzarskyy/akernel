@@ -37,6 +37,7 @@ jobs:
       - name: Assemble static website
         run: |
           mkdir -p _site
+          cp .nojekyll _site/
           cp web/index.html web/style.css web/forum.js _site/
           cp -R web/docs web/downloads web/loader _site/
       - uses: actions/upload-pages-artifact@v3

@@ -14,7 +14,7 @@ body:
     attributes:
       label: Version or commit
       description: Include the version, commit, or workflow run URL if known.
-      placeholder: "1.2.0nr nightly / commit SHA"
+      placeholder: "1.2.1 Slim Jims / commit SHA"
     validations:
       required: true
   - type: dropdown

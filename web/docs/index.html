@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#181818">
-    <meta name="description" content="Build and test the akernel 1.2.0nr nightly in a disposable Linux virtual machine.">
+    <meta name="description" content="Build and test akernel 1.2.1 Slim Jims in a disposable Linux virtual machine.">
     <title>Documentation — akernel</title>
     <link rel="stylesheet" href="style.css">
   </head>
@@ -18,7 +18,7 @@
       </a>
       <nav class="topbar-links" aria-label="Project links">
         <a href="../index.html">Forum</a>
-        <a href="../downloads/">Nightly ISO</a>
+        <a href="../downloads/">Version 1.2.1</a>
         <a href="../loader/">Browser demo</a>
         <a href="package-guide.html">Package guide</a>
         <a href="os-manual.html">OS manual</a>
@@ -33,7 +33,7 @@
         <a class="sidebar-link active" href="#overview">Overview</a>
         <a class="sidebar-link" href="#requirements">Requirements</a>
         <a class="sidebar-link" href="steps/">Build guides by OS</a>
-        <a class="sidebar-link" href="../downloads/">Nightly ISO downloads</a>
+        <a class="sidebar-link" href="../downloads/">Version 1.2.1 downloads</a>
         <a class="sidebar-link" href="../loader/">Browser loader demo</a>
         <a class="sidebar-link" href="#layout">Project layout</a>
         <a class="sidebar-link" href="#packages">Packages</a>
@@ -44,14 +44,14 @@
         <a class="sidebar-link" href="#forum-api">Forum API</a>
         <div class="sidebar-note">
           <span class="status-dot"></span>
-          <span>Nightly 1.2.0nr<br><strong>Limine x86-64</strong></span>
+          <span>1.2.1 Slim Jims<br><strong>Limine x86-64</strong></span>
         </div>
       </aside>
 
       <main class="document">
         <div class="breadcrumb"><a href="../">akernel</a><span>/</span>Documentation</div>
         <header class="doc-heading" id="overview">
-          <p class="overline">PROJECT HANDBOOK · NIGHTLY 1.2.0NR</p>
+          <p class="overline">PROJECT HANDBOOK · VERSION 1.2.1</p>
           <h1>Documentation</h1>
           <p class="lead">A field guide to building, exploring, and contributing to akernel.</p>
           <div class="doc-meta"><span>Getting started</span><span>·</span><span>x86 &amp; x86-64</span></div>
@@ -103,7 +103,7 @@
             <div><code>third_party/limine-protocol/</code><span>Pinned Limine protocol header and its 0BSD license.</span></div>
             <div><code>pkg/akernel/</code><span>Package descriptors, the fetch system-info renderer, and sys interface stub.</span></div>
             <div><code>releases/</code><span>Versioned release notes and artifact availability manifests.</span></div>
-            <div><code>web/downloads/</code><span>Nightly ISO availability, verified release links, and local build instructions.</span></div>
+            <div><code>web/downloads/</code><span>ISO availability, verified release links, and local build instructions for the current version.</span></div>
             <div><code>web/loader/</code><span>Browser-only boot-flow simulation and ISO9660 image check.</span></div>
             <div><code>web/docs/steps/</code><span>Standalone build instructions for Linux, Windows, and macOS hosts.</span></div>
             <div><code>Makefile</code><span>Legacy ELF targets plus the opt-in Limine ISO and QEMU targets.</span></div>
@@ -114,7 +114,7 @@
 
         <section class="doc-section" id="packages">
           <p class="section-kicker">07 — PACKAGE STATUS</p>
-          <h2>Packages in this nightly</h2>
+          <h2>Packages in this version</h2>
           <p>The current package code is metadata and interface scaffolding. It is not an installer, package repository, or complete runtime service. The fetch renderer is included in the opt-in Limine boot target; package sources are not part of the default <code>make</code> targets.</p>
           <div class="file-list">
             <div><code>pkg/akernel/package.h</code><span>Common package descriptor, version comparison, and target compatibility checks.</span></div>
@@ -147,15 +147,15 @@ git push -u origin my-change</code></pre>
 
         <section class="doc-section" id="releases">
           <p class="section-kicker">09 — PUBLISH</p>
-          <h2>Nightly build 1.2.0nr</h2>
-          <p>The nightly source snapshot and artifact manifest are in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.2.0nr">the nightly record ↗</a>. The source can build an x86-64 Limine ISO and ZIP locally with <code>make CC=gcc iso-zip</code>, but no ISO is published. The previous beta record remains available in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.2beta">the v1.2 beta archive ↗</a>.</p>
-          <p>See the <a href="../downloads/">nightly ISO downloads page</a> for current availability and local build instructions, or try the <a href="../loader/">browser loader demo</a> for a simulated preview.</p>
-          <p>This is an in-progress nightly snapshot, not a stable release tag. Clearly label any ISO shared for testing as a VM-test image, not a complete installable operating system.</p>
+          <h2>Version 1.2.1 "Slim Jims"</h2>
+          <p>The source snapshot and artifact manifest are in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.2.1">the 1.2.1 version record ↗</a>. The source can build an x86-64 Limine ISO and ZIP locally with <code>make CC=gcc iso-zip</code>; the current local ISO passed a BIOS boot test in QEMU but is not published. Previous records remain available in <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.2.0nr">the 1.2.0nr archive ↗</a> and <a href="https://github.com/oysterzarskyy/akernel/tree/main/releases/v1.2beta">the v1.2 beta archive ↗</a>.</p>
+          <p>See the <a href="../downloads/">version 1.2.1 ISO downloads page</a> for current availability and local build instructions, or try the <a href="../loader/">browser loader demo</a> for a simulated preview.</p>
+          <p>This is a versioned source snapshot without an official ISO download. Clearly label any ISO shared for testing as a VM-test image, not a complete installable operating system.</p>
           <div class="code-block">
-            <div class="code-caption"><span>BUILD</span><span>GCC nightly ISO archive</span></div>
+            <div class="code-caption"><span>BUILD</span><span>GCC ISO archive</span></div>
             <pre><code>make CC=gcc iso-zip
-unzip -t build/akernel-v1.2.0nr-x86_64.zip
-sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256</code></pre>
+unzip -t build/akernel-v1.2.1-x86_64.zip
+sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256</code></pre>
           </div>
           <p>GitHub Actions builds and publishes the static forum and handbook to GitHub Pages using <code>.github/workflows/pages.yml</code>. Set <strong>Settings → Pages → Build and deployment → Source</strong> to <strong>GitHub Actions</strong>. The forum API must be hosted separately; see the API setup notes below.</p>
         </section>

@@ -41,20 +41,20 @@ jobs:
       - name: Build ISO ZIP with GCC
         run: make CC=gcc iso-zip
       - name: Verify ISO artifact
-        run: test -s build/akernel-v1.2.0nr-x86_64.iso
+        run: test -s build/akernel-v1.2.1-x86_64.iso
       - name: Verify ISO filesystem
-        run: file build/akernel-v1.2.0nr-x86_64.iso | grep -q "ISO 9660"
+        run: file build/akernel-v1.2.1-x86_64.iso | grep -q "ISO 9660"
       - name: Verify ZIP and checksum
         run: |
-          unzip -t build/akernel-v1.2.0nr-x86_64.zip
-          sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256
+          unzip -t build/akernel-v1.2.1-x86_64.zip
+          sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256
       - uses: actions/upload-artifact@v4
         with:
-          name: akernel-v1.2.0nr-iso
+          name: akernel-v1.2.1-iso
           path: |
-            build/akernel-v1.2.0nr-x86_64.iso
-            build/akernel-v1.2.0nr-x86_64.zip
-            build/akernel-v1.2.0nr-x86_64.zip.sha256
+            build/akernel-v1.2.1-x86_64.iso
+            build/akernel-v1.2.1-x86_64.zip
+            build/akernel-v1.2.1-x86_64.zip.sha256
           if-no-files-found: error
 
   website:

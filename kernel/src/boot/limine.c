@@ -4,20 +4,28 @@
 #include "limine.h"
 #include "akernel/boot/limine.h"
 
-__attribute__((used, section(".limine_requests")))
+#if defined(__GNUC__) || defined(__clang__)
+#define AKERNEL_SECTION(name) __attribute__((used, section(name)))
+#elif defined(_MSC_VER)
+#define AKERNEL_SECTION(name) __declspec(allocate(name))
+#else
+#define AKERNEL_SECTION(name)
+#endif
+
+AKERNEL_SECTION(".limine_requests")
 static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(6);
 
-__attribute__((used, section(".limine_requests")))
+AKERNEL_SECTION(".limine_requests")
 static volatile struct limine_framebuffer_request framebuffer_request = {
     .id = LIMINE_FRAMEBUFFER_REQUEST_ID,
     .revision = 0
 };
 
-__attribute__((used, section(".limine_requests_start")))
+AKERNEL_SECTION(".limine_requests_start")
 static volatile uint64_t limine_requests_start_marker[] =
     LIMINE_REQUESTS_START_MARKER;
 
-__attribute__((used, section(".limine_requests_end")))
+AKERNEL_SECTION(".limine_requests_end")
 static volatile uint64_t limine_requests_end_marker[] =
     LIMINE_REQUESTS_END_MARKER;
 

@@ -19,7 +19,7 @@
       <nav class="topbar-links" aria-label="Project links">
         <a href="index.html">Handbook</a>
         <a href="os-manual.html">OS manual</a>
-        <a href="../downloads/">Nightly downloads</a>
+        <a href="../downloads/">Version 1.2.1 downloads</a>
         <a href="https://github.com/oysterzarskyy/akernel">Source ↗</a>
       </nav>
     </header>
@@ -30,13 +30,13 @@
         <a class="sidebar-link active" href="#iso">Package an ISO</a>
         <a class="sidebar-link" href="#metadata">Package metadata</a>
         <a class="sidebar-link" href="#publish">Verify and share</a>
-        <div class="sidebar-note">Nightly 1.2.0nr<br>Experimental format</div>
+        <div class="sidebar-note">1.2.1 Slim Jims<br>Experimental format</div>
       </aside>
 
       <main class="document">
         <div class="breadcrumb"><a href="index.html">Handbook</a><span>/</span>Package guide</div>
         <header class="doc-heading">
-          <p class="overline">PACKAGING · NIGHTLY 1.2.0NR</p>
+          <p class="overline">PACKAGING · VERSION 1.2.1</p>
           <h1>How to package your akernels</h1>
           <p class="lead">Build a bootable test image, verify it, and organize experimental package metadata without implying that akernel has an installer.</p>
         </header>
@@ -60,11 +60,11 @@ sudo apt install -y build-essential gcc-multilib binutils nasm curl xorriso zip 
             <div class="code-caption"><span>TERMINAL</span><span>repository root</span></div>
             <pre><code>make clean
 make CC=gcc iso-zip
-unzip -t build/akernel-v1.2.0nr-x86_64.zip
-sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256
-file build/akernel-v1.2.0nr-x86_64.iso</code></pre>
+unzip -t build/akernel-v1.2.1-x86_64.zip
+sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256
+file build/akernel-v1.2.1-x86_64.iso</code></pre>
           </div>
-          <p>The outputs are <code>build/akernel-v1.2.0nr-x86_64.iso</code>, <code>build/akernel-v1.2.0nr-x86_64.zip</code>, and its <code>.sha256</code> file. Boot the ISO only as virtual CD media in a disposable VM. The image is not an installer.</p>
+          <p>The outputs are <code>build/akernel-v1.2.1-x86_64.iso</code>, <code>build/akernel-v1.2.1-x86_64.zip</code>, and its <code>.sha256</code> file. Boot the ISO only as virtual CD media in a disposable VM. The image is not an installer.</p>
         </section>
 
         <section class="doc-section" id="metadata">
@@ -105,7 +105,7 @@ static const akpkg_descriptor example_package = {
   "name": "example",
   "version": "1.0.0",
   "target": "x86_64-elf",
-  "minimum_kernel": "1.2.0nr",
+  "minimum_kernel": "1.2.1",
   "entry_point": null,
   "status": "source-example-not-installable"
 }</code></pre>

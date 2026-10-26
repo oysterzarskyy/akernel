@@ -40,10 +40,10 @@ static const char *const akpkg_fetch_info[] = {
     "akernel",
     "-----------------------------",
     "OS: akernel",
-    "Version: " AKPACKAGE_VERSION_STRING,
+    "Version: " AKPACKAGE_VERSION_STRING " (" AKPACKAGE_VERSION_NAME ")",
     "Architecture: " AKPACKAGE_TARGET_ARCH_NAME,
     "Build: freestanding ELF",
-    "Status: nightly scaffold",
+    "Status: kernel scaffold",
     "Packages: metadata and stubs",
     "Boot: " AKPACKAGE_BOOT_PROTOCOL
 };

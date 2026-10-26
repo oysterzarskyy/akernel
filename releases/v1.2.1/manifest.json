@@ -1,0 +1,57 @@
+{
+  "project": "akernel",
+  "version": "1.2.1",
+  "nickname": "Slim Jims",
+  "channel": "versioned",
+  "release_tag": null,
+  "kernel_outputs": [
+    {
+      "architecture": "x86",
+      "format": "ELF",
+      "build_path": "build/x86/kernel.elf",
+      "bootable": false
+    },
+    {
+      "architecture": "x86_64",
+      "format": "ELF",
+      "build_path": "build/x86_64/kernel.elf",
+      "bootable": false
+    }
+  ],
+  "iso": {
+    "filename": "akernel-v1.2.1-x86_64.iso",
+    "build_path": "build/akernel-v1.2.1-x86_64.iso",
+    "status": "qemu_boot_tested_not_published",
+    "sha256": "520adbbdb77c8867e726255f6887a878c6add84d80a27d13a52f473f537f37ef",
+    "size_bytes": 4421632,
+    "archive_filename": "akernel-v1.2.1-x86_64.zip",
+    "archive_build_path": "build/akernel-v1.2.1-x86_64.zip",
+    "archive_checksum_path": "build/akernel-v1.2.1-x86_64.zip.sha256",
+    "archive_sha256": "b70fff56a1b457c44a507a8f99c5c604970bb9c5e0b883f37bd3c0b538c1e042",
+    "archive_size_bytes": 1309615,
+    "compiler": "GCC 15.2.0 (x86_64-elf cross compiler)",
+    "binutils_version": "2.45",
+    "build_environment": "MSYS2 UCRT64",
+    "boot_protocol": "Limine",
+    "architectures": [
+      "x86_64"
+    ],
+    "firmware": [
+      "BIOS",
+      "UEFI"
+    ],
+    "limine_version": "12.9.4",
+    "limine_binary_sha256": "847334bc4bc142de996fbd132806b89ed73ac9ab34dbc1e90cfebf1fcc68c2b1",
+    "limine_binary_license": "BSD-2-Clause",
+    "build_command": "make CC_X86_64=x86_64-elf-gcc LD_X86_64=x86_64-elf-ld iso-zip",
+    "test_command": "qemu-system-x86_64 -m 512M -cdrom build/akernel-v1.2.1-x86_64.iso -boot d",
+    "test_result": "passed",
+    "test_note": "BIOS boot reached the kernel halt loop under QEMU 11.1.1 with no guest errors.",
+    "included_in_source_release": false
+  },
+  "packages": {
+    "status": "metadata_and_stubs_only",
+    "installable": false
+  },
+  "recommended_test": "Boot the ISO as virtual media in a disposable VM; BIOS boot was verified under QEMU."
+}

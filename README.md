@@ -1,4 +1,4 @@
-# akernel 1.2.0nr nightly
+# akernel 1.2.1 "Slim Jims"
 
 akernel is a small freestanding kernel scaffold with separate 32-bit x86 and
 x86-64 ELF targets. It also has an opt-in x86-64 bootable ISO target using the
@@ -31,13 +31,13 @@ make CC=gcc iso-zip
 
 `make check-x86` and `make check-x86_64` build individual targets. Outputs are
 written to `build/x86/kernel.elf` and `build/x86_64/kernel.elf`.
-`make CC=gcc iso-zip` builds `build/akernel-v1.2.0nr-x86_64.iso`, which supports
+`make CC=gcc iso-zip` builds `build/akernel-v1.2.1-x86_64.iso`, which supports
 x86-64 BIOS and UEFI boot through Limine. To test it with QEMU, install
 `qemu-system-x86` and run `make run-qemu`. The VM target boots only the ISO; it
 does not access a physical disk. The command also creates
-`build/akernel-v1.2.0nr-x86_64.zip` and its `.sha256` checksum file. Verify the
-archive with `unzip -t build/akernel-v1.2.0nr-x86_64.zip` and
-`sha256sum -c build/akernel-v1.2.0nr-x86_64.zip.sha256`.
+`build/akernel-v1.2.1-x86_64.zip` and its `.sha256` checksum file. Verify the
+archive with `unzip -t build/akernel-v1.2.1-x86_64.zip` and
+`sha256sum -c build/akernel-v1.2.1-x86_64.zip.sha256`.
 
 ### Windows
 
@@ -93,17 +93,21 @@ browser keeps its anonymous identity in a persistent HttpOnly cookie; clearing
 cookies loses access to that guest identity. See the [forum API guide](web/docs/#forum-api)
 for deployment details.
 
-## Nightly build 1.2.0nr
+## Version 1.2.1 "Slim Jims"
 
-Nightly notes and the artifact manifest are in
-[`releases/v1.2.0nr/`](releases/v1.2.0nr/). The repository can build an
-x86-64 Limine ISO locally, but no ISO is attached to or published with this
-source snapshot. Test it only in a disposable VM; do not replace a Linux
-installation or write the ISO to a physical disk. See the
+Version notes and the artifact manifest are in
+[`releases/v1.2.1/`](releases/v1.2.1/). The repository can build an x86-64
+Limine ISO locally. Its current build passed a BIOS boot test in QEMU and
+reached the kernel halt loop, but no ISO is attached to or published with this
+source snapshot. MSYS2 UCRT64 users need an `x86_64-elf` GCC cross-toolchain;
+the native UCRT64 compiler targets Windows PE. Test the ISO only in a
+disposable VM; do not replace a Linux installation or write the ISO to a
+physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
-The website's [nightly downloads page](web/downloads/) explains the current ISO
+The website's [downloads page](web/downloads/) explains the current ISO
 availability, and the [browser loader demo](web/loader/) provides a simulated
-preview that does not execute the kernel. Previous beta records remain in
+preview that does not execute the kernel. Previous release records remain in
+[`releases/v1.2.0nr/`](releases/v1.2.0nr/) and
 [`releases/v1.1.109403/`](releases/v1.1.109403/).
 
 The `pkg/akernel/` tree contains package metadata, a text system-information
@@ -138,9 +142,9 @@ Use the repository's issue forms to report reproducible bugs or propose
 features. The bug form links to private vulnerability reporting for security
 issues; do not post exploitable details publicly.
 
-This nightly is an in-progress source snapshot, not a stable release tag.
-The earlier beta record is preserved in
-[`releases/v1.2beta/`](releases/v1.2beta/) and the older beta in
+This version is a source snapshot; no ISO is currently published. Earlier
+records are preserved in [`releases/v1.2.0nr/`](releases/v1.2.0nr/),
+[`releases/v1.2beta/`](releases/v1.2beta/), and
 [`releases/v1.1.109403/`](releases/v1.1.109403/). The ISO is for VM testing
 and is not an installable operating system.
 

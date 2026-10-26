@@ -42,10 +42,10 @@ const fetchInfo = [
   "akernel",
   "-----------------------------",
   "OS: akernel",
-  "Version: 1.2.0nr",
+  "Version: 1.2.1 (Slim Jims)",
   "Architecture: x86_64",
   "Build: freestanding ELF",
-  "Status: nightly scaffold",
+  "Status: kernel scaffold",
   "Packages: metadata and stubs",
   "Boot: Limine"
 ];
