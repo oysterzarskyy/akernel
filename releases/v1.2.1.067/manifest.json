@@ -19,7 +19,7 @@
   "iso": {
     "filename": "akernel-v1.2.1.067-x86_64.iso",
     "build_path": "build/akernel-v1.2.1.067-x86_64.iso",
-    "status": "built_not_published",
+    "status": "published_prerelease",
     "sha256": "37d97899dceb67ec18c5d413f100537be37069fd3abd33ac524c43eb1d8d51dd",
     "size_bytes": 4423680,
     "archive_filename": "akernel-v1.2.1.067-x86_64.zip",
