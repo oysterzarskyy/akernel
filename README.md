@@ -1,4 +1,4 @@
-# akernel 1.2.1.067 nightly (AASH)
+# akernel 1.2.2 nightly (Caramel)
 
 akernel is a small freestanding kernel scaffold with separate 32-bit x86 and
 x86-64 ELF targets. It also has an opt-in x86-64 bootable ISO target using the
