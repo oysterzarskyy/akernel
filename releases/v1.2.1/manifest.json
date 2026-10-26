@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "nickname": "Slim Jims",
   "channel": "versioned",
-  "release_tag": null,
+  "release_tag": "v1.2.1",
   "kernel_outputs": [
     {
       "architecture": "x86",
@@ -21,9 +21,15 @@
   "iso": {
     "filename": "akernel-v1.2.1-x86_64.iso",
     "build_path": "build/akernel-v1.2.1-x86_64.iso",
-    "status": "qemu_boot_tested_not_published",
+    "status": "published",
     "sha256": "520adbbdb77c8867e726255f6887a878c6add84d80a27d13a52f473f537f37ef",
     "size_bytes": 4421632,
+    "release_url": "https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1",
+    "release_assets": {
+      "iso": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1/akernel-v1.2.1-x86_64.iso",
+      "archive": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1/akernel-v1.2.1-x86_64.zip",
+      "checksums": "https://github.com/oysterzarskyy/akernel/releases/download/v1.2.1/SHA256SUMS.txt"
+    },
     "archive_filename": "akernel-v1.2.1-x86_64.zip",
     "archive_build_path": "build/akernel-v1.2.1-x86_64.zip",
     "archive_checksum_path": "build/akernel-v1.2.1-x86_64.zip.sha256",

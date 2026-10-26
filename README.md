@@ -97,12 +97,11 @@ for deployment details.
 
 Version notes and the artifact manifest are in
 [`releases/v1.2.1/`](releases/v1.2.1/). The repository can build an x86-64
-Limine ISO locally. Its current build passed a BIOS boot test in QEMU and
-reached the kernel halt loop, but no ISO is attached to or published with this
-source snapshot. MSYS2 UCRT64 users need an `x86_64-elf` GCC cross-toolchain;
-the native UCRT64 compiler targets Windows PE. Test the ISO only in a
-disposable VM; do not replace a Linux installation or write the ISO to a
-physical disk. See the
+Limine ISO locally, and the boot-tested ISO and ZIP are published in the
+[v1.2.1 GitHub release](https://github.com/oysterzarskyy/akernel/releases/tag/v1.2.1).
+MSYS2 UCRT64 users need an `x86_64-elf` GCC cross-toolchain; the native UCRT64
+compiler targets Windows PE. Test the ISO only in a disposable VM; do not
+replace a Linux installation or write the ISO to a physical disk. See the
 [step-by-step build guides for each host OS](web/docs/steps/).
 The website's [downloads page](web/downloads/) explains the current ISO
 availability, and the [browser loader demo](web/loader/) provides a simulated
