@@ -16,6 +16,6 @@
 #define AKERNEL_VERSION_PATCH 1U
 #define AKERNEL_VERSION_STRING "1.2.1.067"
 #define AKERNEL_VERSION "1.2.1.067"
-#define AKERNEL_VERSION_NAME "AASH Nightly"
+#define AKERNEL_VERSION_NAME "Chocolate Oranges" // Terry's Chocolate Orange, a classic British confectionery treat, is a chocolate sphere filled with orange-flavored segments. The name evokes a sense of nostalgia and indulgence, making it a fitting nickname for this version of the akernel project.
 
 #endif

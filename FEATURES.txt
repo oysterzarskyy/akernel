@@ -1,0 +1,12 @@
+- return to an alpha based version
+- add more features like the akpkg manager
+    EXAMPLES:
+```
+@user ~\pub\user\project $ akpkg install package-template
+
+Getting package-template @v1.0.0
+
+installing package-template will install:
+"akernel-extras,color@1.1,common-stuff"
+Are you sure? [Y/n]
+```

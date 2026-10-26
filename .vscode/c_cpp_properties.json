@@ -8,7 +8,8 @@
                 "${workspaceFolder}/pkg/akernel",
                 "${workspaceFolder}/pkg/akernel/fetch",
                 "${workspaceFolder}/pkg/akernel/fetch/include",
-                "${workspaceFolder}/pkg/akernel/sys"
+                "${workspaceFolder}/pkg/akernel/sys",
+                "${workspaceFolder}/pkg/akernel/aash"
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "cStandard": "c11",

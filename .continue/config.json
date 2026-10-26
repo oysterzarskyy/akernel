@@ -1,0 +1,8 @@
+{
+  "title": "Qwen 3.5 4B",
+  "provider": "ollama",
+  "model": "qwen3.5:4b",
+  "requestOptions": {
+    "numCtx": 65536
+  }
+}
