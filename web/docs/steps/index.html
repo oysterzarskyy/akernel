@@ -63,7 +63,8 @@
         <p class="section-kicker">RECOMMENDED ISO TEST</p>
         <h2>Use an isolated virtual machine</h2>
         <p>For ISO testing, create a disposable Ubuntu 24.04 LTS VM with a virtual disk, 2 CPU cores, and at least 2 GB RAM. Take a snapshot first. Never attach a physical host disk.</p>
-        <p>On Linux, install <code>curl</code>, <code>xorriso</code>, and <code>zip</code> in addition to the standard build tools, then run <code>make CC=gcc iso-zip</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; its window stays open after the demo kernel halts, and you can close the window to stop QEMU. The guest is not interactive and cannot install an OS. Other hypervisors can boot the ISO as virtual CD media.</p>
+        <p>On Linux, install <code>curl</code>, <code>xorriso</code>, and <code>zip</code> in addition to the standard build tools, then run <code>make CC=gcc iso-zip</code>. The Makefile pins Limine v12.9.4 and verifies its SHA-256 before building. Boot the resulting ISO in QEMU with <code>make run-qemu</code>; its window stays open after the demo kernel halts, and you can close the window to stop QEMU. The guest is not interactive and cannot install an OS.</p>
+        <p>The ISO is a standard x86-64 bootable CD image with Limine BIOS and UEFI paths. CI smoke-tests both paths in QEMU. VirtualBox, VMware, and Hyper-V can be tried by attaching the ISO as virtual optical media, but they are not yet validated in CI; disable Secure Boot if the firmware rejects the unsigned bootloader. Do not attach a physical disk.</p>
       </section>
 
       <footer class="doc-footer">
