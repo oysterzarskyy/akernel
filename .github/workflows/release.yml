@@ -1,0 +1,196 @@
+name: Release
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Triggers
+#   • Push a semver tag  →  versioned stable release  (e.g. v1.2.3)
+#   • Push to nightly    →  rolling nightly pre-release
+#   • Push to main       →  only runs if a version tag is also pushed
+#   • workflow_dispatch  →  manual run with optional tag override
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'         # v1.2.3  exact stable
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+' # v1.2.3-rc1  release candidate
+    branches:
+      - nightly
+  workflow_dispatch:
+    inputs:
+      tag_override:
+        description: 'Release tag (leave blank = auto from version.h)'
+        required: false
+        default: ''
+      prerelease:
+        description: 'Mark as pre-release?'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write   # create releases & upload assets
+
+jobs:
+  release:
+    name: Build & Publish ISO
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Source ──────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need full history for changelog
+
+      # ── 2. Extract version from kernel header ─────────────────────────────
+      - name: Extract version from version.h
+        id: ver
+        run: |
+          HDR=kernel/include/akernel/version.h
+
+          MAJOR=$(grep -E 'AKERNEL_VERSION_MAJOR\s+[0-9]+' "$HDR" | grep -oP '\d+' | tail -1)
+          MINOR=$(grep -E 'AKERNEL_VERSION_MINOR\s+[0-9]+' "$HDR" | grep -oP '\d+' | tail -1)
+          PATCH=$(grep -E 'AKERNEL_VERSION_PATCH\s+[0-9]+' "$HDR" | grep -oP '\d+' | tail -1)
+          NAME=$(grep  'AKERNEL_VERSION_NAME'               "$HDR" | grep -oP '"[^"]+"' | tr -d '"')
+
+          SEMVER="${MAJOR}.${MINOR}.${PATCH}"
+
+          # ── Determine release tag ──
+          if [ -n "${{ github.event.inputs.tag_override }}" ]; then
+            TAG="${{ github.event.inputs.tag_override }}"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"          # use the actual pushed tag
+          elif [[ "$GITHUB_REF" == refs/heads/nightly ]]; then
+            TAG="nightly"
+          else
+            TAG="v${SEMVER}"
+          fi
+
+          # nightly or rc → pre-release
+          IS_PRE="false"
+          [[ "$TAG" == "nightly"   ]] && IS_PRE="true"
+          [[ "$TAG" == *"-rc"*     ]] && IS_PRE="true"
+          [[ "${{ github.event.inputs.prerelease }}" == "true" ]] && IS_PRE="true"
+
+          echo "major=$MAJOR"       >> "$GITHUB_OUTPUT"
+          echo "minor=$MINOR"       >> "$GITHUB_OUTPUT"
+          echo "patch=$PATCH"       >> "$GITHUB_OUTPUT"
+          echo "semver=$SEMVER"     >> "$GITHUB_OUTPUT"
+          echo "codename=$NAME"     >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"           >> "$GITHUB_OUTPUT"
+          echo "is_pre=$IS_PRE"     >> "$GITHUB_OUTPUT"
+
+          echo "### 📦 Version info"                          >> "$GITHUB_STEP_SUMMARY"
+          echo "| Key | Value |"                             >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|-------|"                             >> "$GITHUB_STEP_SUMMARY"
+          echo "| Semver   | \`$SEMVER\` |"                 >> "$GITHUB_STEP_SUMMARY"
+          echo "| Codename | **$NAME** |"                   >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tag      | \`$TAG\` |"                    >> "$GITHUB_STEP_SUMMARY"
+          echo "| Pre-release | $IS_PRE |"                  >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 3. Toolchain ───────────────────────────────────────────────────────
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            build-essential gcc-multilib nasm \
+            curl xorriso file zip unzip
+
+      # ── 4. Build ISO ───────────────────────────────────────────────────────
+      - name: Build ISO + ZIP
+        run: make CC=gcc iso-zip
+
+      # ── 5. Locate artifacts ────────────────────────────────────────────────
+      - name: Locate build artifacts
+        id: arts
+        run: |
+          ISO=$(find build -maxdepth 1 -name "*.iso" | head -n1)
+          ZIP=$(find build -maxdepth 1 -name "*.zip" | head -n1)
+          SHA="${ZIP}.sha256"
+
+          test -s "$ISO" || { echo "ERROR: ISO not found/empty"; exit 1; }
+          test -s "$ZIP" || { echo "ERROR: ZIP not found/empty"; exit 1; }
+          test -s "$SHA" || { echo "ERROR: SHA not found/empty"; exit 1; }
+
+          echo "iso=$ISO" >> "$GITHUB_OUTPUT"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+          FILE_SIZE=$(du -sh "$ISO" | cut -f1)
+          echo "Found: $ISO ($FILE_SIZE) | $ZIP | $SHA"
+          echo "| File | Path |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ISO | \`$ISO\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| ZIP | \`$ZIP\` |" >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 6. Upload CI artifact (every run) ─────────────────────────────────
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: akernel-${{ steps.ver.outputs.tag }}-iso
+          path: |
+            ${{ steps.arts.outputs.iso }}
+            ${{ steps.arts.outputs.zip }}
+            ${{ steps.arts.outputs.sha }}
+          if-no-files-found: error
+          retention-days: 90
+
+      # ── 7. Generate changelog since last tag ──────────────────────────────
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed -n '2p' || true)
+          if [ -n "$PREV_TAG" ]; then
+            LOG=$(git log "${PREV_TAG}..HEAD" --oneline --no-decorate | head -40)
+            SINCE="since \`${PREV_TAG}\`"
+          else
+            LOG=$(git log --oneline --no-decorate | head -20)
+            SINCE="(all commits)"
+          fi
+
+          NOTES=$(cat <<EOF
+## akernel ${{ steps.ver.outputs.tag }} — ${{ steps.ver.outputs.codename }}
+
+$( [[ "${{ steps.ver.outputs.is_pre }}" == "true" ]] && echo "🌙 **Pre-release / nightly** — may be unstable." || echo "✅ **Stable release.**" )
+
+| Field | Value |
+|-------|-------|
+| Version  | \`${{ steps.ver.outputs.semver }}\` |
+| Codename | **${{ steps.ver.outputs.codename }}** |
+| Commit   | \`${{ github.sha }}\` |
+| Built    | $(date -u '+%Y-%m-%d %H:%M UTC') |
+
+### Included files
+- **ISO** — bootable image (BIOS + UEFI via Limine, works in QEMU & VirtualBox)
+- **ZIP** — ISO in a zip archive
+- **SHA256** — checksum file
+
+### Quick boot
+\`\`\`bash
+# QEMU
+qemu-system-x86_64 -m 2G -cdrom akernel-*.iso -no-reboot
+
+# VirtualBox — attach the ISO as a virtual optical drive,
+# set firmware to BIOS or EFI, boot from CD/DVD.
+\`\`\`
+
+### Changes ${SINCE}
+\`\`\`
+${LOG}
+\`\`\`
+EOF
+          )
+          echo "$NOTES" > release_body.md
+          cat release_body.md >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 8. Publish GitHub Release ──────────────────────────────────────────
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name:   ${{ steps.ver.outputs.tag }}
+          name:       "akernel ${{ steps.ver.outputs.semver }} \"${{ steps.ver.outputs.codename }}\""
+          body_path:  release_body.md
+          prerelease: ${{ steps.ver.outputs.is_pre }}
+          make_latest: ${{ steps.ver.outputs.is_pre == 'false' }}
+          files: |
+            ${{ steps.arts.outputs.iso }}
+            ${{ steps.arts.outputs.zip }}
+            ${{ steps.arts.outputs.sha }}

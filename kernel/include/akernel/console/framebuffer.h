@@ -38,4 +38,8 @@ int akernel_framebuffer_console_set_color(
     const char *name,
     unsigned int length);
 
+void akernel_framebuffer_console_clear(struct akernel_framebuffer_console *console);
+void akernel_framebuffer_console_putchar(struct akernel_framebuffer_console *console, char c);
+void akernel_framebuffer_console_backspace(struct akernel_framebuffer_console *console);
+
 #endif

@@ -1,0 +1,7 @@
+# Ensure shell scripts always use Unix LF line endings
+*.sh text eol=lf
+Makefile text eol=lf
+*.ld text eol=lf
+*.asm text eol=lf
+*.c text eol=lf
+*.h text eol=lf

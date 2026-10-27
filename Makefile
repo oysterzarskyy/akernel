@@ -145,6 +145,28 @@ build/x86_64/limine-setup.o: pkg/akernel/setup/setup.c \
 	mkdir -p build/x86_64
 	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/setup -c $< -o $@
 
+build/x86_64/serial.o: kernel/src/drivers/serial.c \
+                       kernel/include/akernel/drivers/serial.h \
+                       kernel/include/akernel/arch/io.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -c $< -o $@
+
+build/x86_64/keyboard.o: kernel/src/drivers/keyboard.c \
+                         kernel/include/akernel/drivers/keyboard.h \
+                         kernel/include/akernel/arch/io.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -c $< -o $@
+
+build/x86_64/shell.o: kernel/src/shell.c \
+                      kernel/include/akernel/shell.h \
+                      kernel/include/akernel/console/framebuffer.h \
+                      kernel/include/akernel/drivers/keyboard.h \
+                      kernel/include/akernel/drivers/serial.h \
+                      kernel/include/akernel/arch/io.h \
+                      pkg/akernel/fetch/fetch.h
+	mkdir -p build/x86_64
+	$(CC_X86_64) $(LIMINE_CFLAGS) -Ipkg/akernel/fetch -c $< -o $@
+
 build/x86_64/akernel-limine.elf: build/x86_64/kernel.o \
                                 build/x86_64/limine.o \
                                 build/x86_64/framebuffer.o \
@@ -153,12 +175,16 @@ build/x86_64/akernel-limine.elf: build/x86_64/kernel.o \
                                 build/x86_64/limine-aash.o \
                                 build/x86_64/limine-setup.o \
                                 kernel/arch/x86_64/limine.ld
+                                build/x86_64/serial.o \
+                                build/x86_64/keyboard.o \
+                                build/x86_64/shell.o \
 	$(LD_X86_64) -m elf_x86_64 -z max-page-size=0x1000 \
 		-T kernel/arch/x86_64/limine.ld -o $@ \
 		build/x86_64/kernel.o build/x86_64/limine.o \
 		build/x86_64/framebuffer.o build/x86_64/limine-halt.o \
 		build/x86_64/limine-fetch.o build/x86_64/limine-aash.o \
-		build/x86_64/limine-setup.o
+		build/x86_64/limine-setup.o \
+		build/x86_64/serial.o build/x86_64/keyboard.o build/x86_64/shell.o
 
 $(LIMINE_ARCHIVE):
 	mkdir -p build

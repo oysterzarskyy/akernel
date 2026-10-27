@@ -330,3 +330,39 @@ int akernel_framebuffer_console_set_color(
         framebuffer_colour(&console->framebuffer, red, green, blue);
     return 0;
 }
+
+void akernel_framebuffer_console_clear(struct akernel_framebuffer_console *console)
+{
+    if (console == NULL) return;
+    framebuffer_clear(&console->framebuffer,
+                      framebuffer_colour(&console->framebuffer, 16u, 24u, 32u));
+    console->cursor_x = console->start_x;
+    console->cursor_y = console->start_x;
+}
+
+void akernel_framebuffer_console_putchar(struct akernel_framebuffer_console *console, char c)
+{
+    if (console == NULL) return;
+    akernel_framebuffer_console_write(&c, 1u, console);
+}
+
+void akernel_framebuffer_console_backspace(struct akernel_framebuffer_console *console)
+{
+    if (console == NULL) return;
+    uint32_t char_width = 6u * console->scale;
+    if (console->cursor_x >= console->start_x + char_width) {
+        console->cursor_x -= char_width;
+        // Clear glyph box
+        uint32_t bg = framebuffer_colour(&console->framebuffer, 16u, 24u, 32u);
+        for (uint32_t dy = 0; dy < 8u * console->scale; ++dy) {
+            for (uint32_t dx = 0; dx < char_width; ++dx) {
+                uint64_t x = console->cursor_x + dx;
+                uint64_t y = console->cursor_y + dy;
+                if (x < console->framebuffer.width && y < console->framebuffer.height) {
+                    console->framebuffer.address[y * console->framebuffer.pitch_pixels + x] = bg;
+                }
+            }
+        }
+    }
+}
+

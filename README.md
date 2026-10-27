@@ -20,6 +20,29 @@ Creating the compressed ISO archive with `make iso-zip` also requires `zip`.
 The ISO also includes Limine's binary-package license and third-party notices.
 The ISO and ISO-ZIP targets need those additional tools.
 
+### Quick Start (Shell Scripts)
+
+You can build and manage the kernel using the scripts in `scripts/` (or the top-level `./build.sh` shortcut):
+
+```sh
+# 1. Check or install dependencies
+./scripts/setup.sh
+
+# 2. Build kernel targets
+./scripts/build.sh           # Build both 32-bit and 64-bit ELF kernels (check-x86 & check-x86_64)
+./scripts/build.sh x86       # Build 32-bit ELF kernel (build/x86/kernel.elf)
+./scripts/build.sh x86_64    # Build 64-bit ELF kernel (build/x86_64/kernel.elf)
+./scripts/build.sh iso       # Build x86_64 bootable Limine ISO
+./scripts/build.sh iso-zip   # Build ISO with ZIP package and SHA256 checksum
+
+# 3. Test and run
+./scripts/test.sh            # Compile and run the AASH interpreter test suite
+./scripts/qemu-run.sh        # Launch the bootable ISO in QEMU (supports --uefi and --debug)
+
+# 4. Clean artifacts
+./scripts/clean.sh           # Clean the build/ directory
+```
+
 ### Linux
 
 On Debian or Ubuntu:

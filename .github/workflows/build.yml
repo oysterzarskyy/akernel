@@ -49,50 +49,70 @@ jobs:
         run: make check-${{ matrix.arch }}
 
   iso:
-    name: Build AASH nightly ISO
+    name: Build & smoke-test ISO
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.ver.outputs.semver }}
+      codename: ${{ steps.ver.outputs.codename }}
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Extract version from version.h
+        id: ver
+        run: |
+          HDR=kernel/include/akernel/version.h
+          MAJOR=$(grep 'AKERNEL_VERSION_MAJOR' "$HDR" | grep -oP '\d+')
+          MINOR=$(grep 'AKERNEL_VERSION_MINOR' "$HDR" | grep -oP '\d+')
+          PATCH=$(grep 'AKERNEL_VERSION_PATCH' "$HDR" | grep -oP '\d+')
+          NAME=$(grep 'AKERNEL_VERSION_NAME'   "$HDR" | grep -oP '"[^"]+"' | tr -d '"')
+          SEMVER="${MAJOR}.${MINOR}.${PATCH}"
+          echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+          echo "codename=$NAME" >> "$GITHUB_OUTPUT"
+          echo "Kernel version: $SEMVER ($NAME)"
+
       - name: Install ISO build tools
         run: |
           sudo apt-get update
           sudo apt-get install --yes build-essential gcc-multilib nasm curl xorriso file zip unzip qemu-system-x86 ovmf
+
       - name: Show GCC version
         run: gcc --version
+
       - name: Build ISO ZIP with GCC (Fresh compile)
         run: make CC=gcc iso-zip
+
       - name: Locate freshly built artifacts
+        id: arts
         run: |
-          # Dynamically finds the files generated inside build/ by the Makefile
-          ISO_FILE=$(find build -name "*.iso" | head -n 1)
-          ZIP_FILE=$(find build -name "*.zip" | head -n 1)
+          ISO_FILE=$(find build -maxdepth 1 -name "*.iso" | head -n 1)
+          ZIP_FILE=$(find build -maxdepth 1 -name "*.zip" | head -n 1)
           SHA_FILE="${ZIP_FILE}.sha256"
-          
           test -n "$ISO_FILE" && test -s "$ISO_FILE"
           test -n "$ZIP_FILE" && test -s "$ZIP_FILE"
           test -n "$SHA_FILE" && test -s "$SHA_FILE"
-          
           echo "ISO_FILE=$ISO_FILE" >> $GITHUB_ENV
           echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
           echo "SHA_FILE=$SHA_FILE" >> $GITHUB_ENV
-          echo "Found freshly built ISO: $ISO_FILE"
+          echo "Found: $ISO_FILE | $ZIP_FILE | $SHA_FILE"
+
       - name: Verify ISO filesystem
         run: file "${{ env.ISO_FILE }}" | grep -q "ISO 9660"
+
       - name: Verify ZIP and checksum
         run: |
           unzip -t "${{ env.ZIP_FILE }}"
           sha256sum -c "${{ env.SHA_FILE }}"
+
       - name: Smoke-test BIOS and UEFI boots in QEMU
         shell: bash
         run: |
           set -euo pipefail
           ISO_PATH="${{ env.ISO_FILE }}"
-
           smoke_boot() {
-            name="$1"
-            shift
+            name="$1"; shift
             log="build/qemu-${name}.log"
             set +e
             timeout --signal=TERM --kill-after=5s 15s \
@@ -103,54 +123,62 @@ jobs:
             status="$?"
             set -e
             if [ "$status" -ne 124 ] && [ "$status" -ne 137 ]; then
-              echo "QEMU ${name} smoke test exited unexpectedly: ${status}"
-              exit 1
+              echo "QEMU ${name} smoke test exited unexpectedly: ${status}"; exit 1
             fi
             if [ -s "$log" ] && grep -v 'Invalid read at addr 0xFED4' "$log" | grep -q .; then
-              cat "$log"
-              echo "QEMU ${name} smoke test reported guest errors"
-              exit 1
+              cat "$log"; echo "QEMU ${name} smoke test reported guest errors"; exit 1
             fi
           }
-
           smoke_boot bios
-          ovmf_code=""
-          ovmf_vars=""
+          ovmf_code=""; ovmf_vars=""
           for suffix in "" "_4M"; do
-            candidate_code="/usr/share/OVMF/OVMF_CODE${suffix}.fd"
-            candidate_vars="/usr/share/OVMF/OVMF_VARS${suffix}.fd"
-            if [ -f "$candidate_code" ] && [ -f "$candidate_vars" ]; then
-              ovmf_code="$candidate_code"
-              ovmf_vars="$candidate_vars"
-              break
-            fi
+            ccode="/usr/share/OVMF/OVMF_CODE${suffix}.fd"
+            cvars="/usr/share/OVMF/OVMF_VARS${suffix}.fd"
+            if [ -f "$ccode" ] && [ -f "$cvars" ]; then ovmf_code="$ccode"; ovmf_vars="$cvars"; break; fi
           done
           test -n "$ovmf_code"
           cp "$ovmf_vars" build/OVMF_VARS.fd
           smoke_boot uefi -machine q35 \
             -drive "if=pflash,format=raw,readonly=on,file=${ovmf_code}" \
             -drive "if=pflash,format=raw,file=build/OVMF_VARS.fd"
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload CI artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: akernel-nightly-iso
+          name: akernel-nightly-${{ steps.ver.outputs.semver }}-iso
           path: |
             ${{ env.ISO_FILE }}
             ${{ env.ZIP_FILE }}
             ${{ env.SHA_FILE }}
           if-no-files-found: error
+          retention-days: 30
+
       - name: Publish Nightly Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/nightly' || github.event_name == 'workflow_dispatch'
         with:
           tag_name: nightly
-          name: "A Kernel Nightly Build"
+          name: "akernel ${{ steps.ver.outputs.semver }} (${{ steps.ver.outputs.codename }}) – Nightly"
           files: |
             ${{ env.ISO_FILE }}
             ${{ env.ZIP_FILE }}
             ${{ env.SHA_FILE }}
           prerelease: true
-          overwrite_files: true
-          body: "Automated nightly build containing the latest compiled ISO, ZIP, and SHA256 checksums."
+          make_latest: false
+          body: |
+            🌙 **Automated nightly build**
+
+            | Field | Value |
+            |-------|-------|
+            | Version | `${{ steps.ver.outputs.semver }}` |
+            | Codename | **${{ steps.ver.outputs.codename }}** |
+            | Commit | `${{ github.sha }}` |
+
+            Includes compiled ISO, ZIP, and SHA-256 checksum.
+
+            ```bash
+            qemu-system-x86_64 -m 2G -cdrom akernel-*.iso -no-reboot
+            ```
 
   website:
     name: Check website
