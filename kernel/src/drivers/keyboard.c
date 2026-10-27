@@ -23,8 +23,8 @@ static const char sc_normal[128] = {
 /*82*/  0,   0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 };
 
-/* Shifted scancode → ASCII */
-static const char sc_shift[128] = {
+/* latest → 128 >> 0 in latest commit */
+static const char sc_shift[] = {
 /*00*/  0,  27, '!','@','#','$','%','^','&','*','(',')','_','+','\b',
 /*0F*/ '\t','Q','W','E','R','T','Y','U','I','O','P','{','}','\n',
 /*1D*/  0,  'A','S','D','F','G','H','J','K','L',':','"','~',
@@ -36,6 +36,7 @@ static const char sc_shift[128] = {
 /*73*/  0,   0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 /*82*/  0,   0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 };
+
 
 static int shift_held  = 0;
 static int caps_lock   = 0;
