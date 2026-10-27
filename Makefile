@@ -153,7 +153,7 @@ build/x86_64/serial.o: kernel/src/drivers/serial.c \
 
 build/x86_64/keyboard.o: kernel/src/drivers/keyboard.c \
                          kernel/include/akernel/drivers/keyboard.h \
-                         kernel/include/akernel/arch/io.h
+kernel/include/akernel/arch/io.h
 	mkdir -p build/x86_64
 	$(CC_X86_64) $(LIMINE_CFLAGS) -c $< -o $@
 
