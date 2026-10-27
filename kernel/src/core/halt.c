@@ -7,6 +7,9 @@ void akernel_halt_forever(void)
         __asm__ volatile ("cli; hlt");
     }
 #else
-#error "akernel_halt_forever requires an x86 target"
+    // Fallback for non-x86 targets or test environments
+    for (;;) {
+        // Infinite loop fallback
+    }
 #endif
 }

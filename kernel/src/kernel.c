@@ -16,10 +16,10 @@ void kmain(void)
         akpkg_fetch_render(akernel_framebuffer_console_write, &console) != 0) {
         akernel_halt_forever();
     }
+     // this doesnt need to be in the release,
+     //if (akaash_run(akernel_setup_boot_script(), &console) != 0) {
+    //    akernel_halt_forever();
+   // }
 
-    if (akaash_run(akernel_setup_boot_script(), &console) != 0) {
-        akernel_halt_forever();
-    }
-
-    akernel_halt_forever();
+    //akernel_halt_forever();
 }
