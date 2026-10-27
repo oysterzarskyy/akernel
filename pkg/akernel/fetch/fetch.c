@@ -1,4 +1,5 @@
 #include "fetch.h"
+#include "../../../kernel/include/akernel/version.h"
 #include "include/internals.h"
 
 static const akpkg_descriptor akpkg_fetch_descriptor = {
@@ -30,9 +31,9 @@ static const char *const akpkg_fetch_info[] = {
     "Kernel: AKernel",
     "Version: " AKPACKAGE_VERSION_STRING " (" AKPACKAGE_VERSION_NAME ")",
     "Architecture: " AKPACKAGE_TARGET_ARCH_NAME,
-    "Build: freestanding ELF",
-    "Status: kernel scaffold",
-    "Packages: metadata and stubs",
+    "Build: Kernel",
+    "Status: Fine (compiled)",
+    "Packages: localized",
     "Boot: " AKPACKAGE_BOOT_PROTOCOL
 };
 

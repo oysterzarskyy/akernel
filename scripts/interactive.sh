@@ -7,6 +7,10 @@
 # sees progress messages rather than an instant jump.
 # ------------------------------------------------------------
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${REPO_ROOT}"
+
 # ANSI colour codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -42,22 +46,22 @@ run_command() {
   case "$1" in
     build|b)
       alert info "Starting kernel build…"
-      ./build.sh all || { alert error "Build failed"; return; }
+      ./scripts/build.sh all || { alert error "Build failed"; return; }
       alert info "Build finished"
       ;;
     iso|i)
       alert info "Building ISO…"
-      ./build.sh iso || { alert error "ISO build failed"; return; }
+      ./scripts/build.sh iso || { alert error "ISO build failed"; return; }
       alert info "ISO created"
       ;;
     run|r)
       alert info "Launching QEMU…"
-      ./qemu-run.sh || { alert error "QEMU failed"; return; }
+      ./scripts/qemu-run.sh || { alert error "QEMU failed"; return; }
       alert info "QEMU terminated"
       ;;
     clean|c)
       alert warn "Cleaning build artefacts…"
-      ./build.sh clean
+      ./scripts/build.sh clean
       alert info "Clean complete"
       ;;
     version|v)

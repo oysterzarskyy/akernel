@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - name: "oysterzarskyy"
+title: "akernel"
+version: "1.2.2" # caramel
+abstract: "A small freestanding kernel scaffold with separate 32-bit x86 and x86-64 ELF targets and an opt-in x86-64 bootable ISO target using the Limine boot protocol."
+repository-code: "https://github.com/oysterzarskyy/akernel"
+url: "https://oysterzarskyy.github.io/akernel"
+license: "GPL-3.0" # as cited
+date-released: "2026-10-25"

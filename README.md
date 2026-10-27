@@ -207,5 +207,5 @@ support for other architectures or firmware.
 
 ## License
 
-GNU General Public License v3.0 or any later version. See [LICENSE](LICENSE)
+GNU General Public License version 3.0. See [LICENSE](LICENSE)
 for the SPDX identifier and link to the canonical license text.
