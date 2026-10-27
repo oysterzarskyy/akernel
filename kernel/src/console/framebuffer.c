@@ -334,7 +334,7 @@ int akernel_framebuffer_console_set_color(
 void akernel_framebuffer_console_clear(struct akernel_framebuffer_console *console)
 {
     if (console == NULL) return;
-    framebuffer_clear(&console->framebuffer,
+    framebuffer_clear(console,
                       framebuffer_colour(&console->framebuffer, 16u, 24u, 32u));
     console->cursor_x = console->start_x;
     console->cursor_y = console->start_x;
