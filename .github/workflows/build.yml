@@ -200,16 +200,6 @@ jobs:
         run: npm run check
         working-directory: web
 
-  labeler:
-    name: PR Labeler
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/labeler@v5
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
   stale:
     name: Manage Stale Issues and PRs
     runs-on: ubuntu-latest
