@@ -174,10 +174,10 @@ build/x86_64/akernel-limine.elf: build/x86_64/kernel.o \
                                 build/x86_64/limine-fetch.o \
                                 build/x86_64/limine-aash.o \
                                 build/x86_64/limine-setup.o \
-                                kernel/arch/x86_64/limine.ld
+                                kernel/arch/x86_64/limine.ld \
                                 build/x86_64/serial.o \
                                 build/x86_64/keyboard.o \
-                                build/x86_64/shell.o \
+                                build/x86_64/shell.o
 	$(LD_X86_64) -m elf_x86_64 -z max-page-size=0x1000 \
 		-T kernel/arch/x86_64/limine.ld -o $@ \
 		build/x86_64/kernel.o build/x86_64/limine.o \
